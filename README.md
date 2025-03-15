@@ -20,3 +20,10 @@ A aplicação permitirá que jogadores:
 - ✅ Façam inscrições e confirmem presença nos jogos;
 - 🏆 Formem times automaticamente ou manualmente;
 - 📊 Acompanhem estatísticas e histórico de partidas.
+
+## Link para docs com as histórias
+{https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
+
+## Prints do jira
+![print jira 01](print_jira_01.jpg)
+![print jira 02](print_jira_02.jpg)
