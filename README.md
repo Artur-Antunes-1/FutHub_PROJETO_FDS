@@ -1,4 +1,4 @@
-# ⚽ Aplicação de Gerenciamento de Peladas Amadoras
+# ⚽ FutHub (Aplicação de gerenciamento de peladas)
 
 ## 📌 Sobre o Projeto
 
