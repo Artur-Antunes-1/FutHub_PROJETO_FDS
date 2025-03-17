@@ -21,12 +21,19 @@ A aplicação permitirá que jogadores:
 - 🏆 Formem times automaticamente ou manualmente;
 - 📊 Acompanhem estatísticas e histórico de partidas.
 
-## Link para docs com as histórias
+## Primeira Entrega
+
+**Link para docs com as histórias**
 {https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
 
-## Prints do jira
+**Prints do jira**
 ![print jira 01](print_jira_01.jpg)
 ![print jira 02](print_jira_02.jpg)
 
-## Link para protótipo do figma
+**Link para protótipo do figma**
 {https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
+
+**Link para screencast no youtube**
+{https://www.youtube.com/watch?v=GoAQoosK2Go}
+**Link para short com legenda**
+{https://www.youtube.com/shorts/yjXOZzWL68Y}
