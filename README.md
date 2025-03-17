@@ -27,8 +27,8 @@ A aplicação permitirá que jogadores:
 {https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
 
 **Prints do jira**
-![print jira 01](print_jira_01.jpg)
-![print jira 02](print_jira_02.jpg)
+![print jira 01](print_backlog.jpg)
+![print jira 02](print_quadro_jira.jpg)
 
 **Link para protótipo do figma**
 {https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
