@@ -35,5 +35,6 @@ A aplicação permitirá que jogadores:
 
 **Link para screencast no youtube**
 {https://www.youtube.com/watch?v=GoAQoosK2Go}
+
 **Link para short com legenda**
 {https://www.youtube.com/shorts/yjXOZzWL68Y}
