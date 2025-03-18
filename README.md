@@ -34,7 +34,4 @@ A aplicação permitirá que jogadores:
 {https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
 
 **Link para screencast no youtube**
-{https://www.youtube.com/watch?v=GoAQoosK2Go}
-
-**Link para short com legenda**
-{https://www.youtube.com/shorts/yjXOZzWL68Y}
+{[FutHub_PROJETO_FDS](https://youtu.be/ffIBYHROJXc)}
