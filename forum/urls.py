@@ -1,11 +1,11 @@
-from django.urls import path
+from django.urls import path # type: ignore
 
 from . import views
 
 app_name = 'forum'
 urlpatterns = [
     # ex: /forum/
-    path("", views.MainView.as_view(), name="index"),
+    path("", views.MainxView.as_view(), name="index"),
     # ex: /forum/5/
     path("<int:pergunta_id>/", views.PerguntaView.as_view(), name="detalhe"),
     # ex: /forum/5/voto/
