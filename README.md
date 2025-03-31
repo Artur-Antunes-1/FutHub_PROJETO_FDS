@@ -26,6 +26,9 @@ A aplicação permitirá que jogadores:
 **Link para docs com as histórias**
 {https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
 
+**Link para o jira**
+{https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1} 
+
 **Prints do jira**
 ![print jira 01](print_backlog.jpg)
 ![print jira 02](print_quadro_jira.jpg)
