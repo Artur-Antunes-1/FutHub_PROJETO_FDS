@@ -27,7 +27,7 @@ A aplicação permitirá que jogadores:
 {https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
 
 **Link para o jira**
-{https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1} 
+{https://projeto-fds-gp3.atlassian.net/jira/your-work} 
 
 **Prints do jira**
 ![print jira 01](print_backlog.jpg)
