@@ -2,13 +2,51 @@
 <html>
 <head>
     <title>Criar Pelada</title>
+    <style>
+        .form-pelada {
+            max-width: 500px;
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .form-pelada label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        .form-pelada input[type="text"],
+        .form-pelada input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        .form-pelada button {
+            background: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
-    <h1>Criar Nova Pelada</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
+    <div class="form-pelada">
+        <h1>Criar Nova Pelada</h1>
+        <form method="post">
+            {% csrf_token %}
+            
+            <label for="id_nome">Nome:</label>
+            {{ form.nome }}
+            
+            <label for="id_data">Data:</label>
+            {{ form.data }}
+            
+            <label for="id_local">Local:</label>
+            {{ form.local }}
+            
+            <button type="submit">Salvar Pelada</button>
+        </form>
+    </div>
 </body>
 </html>
