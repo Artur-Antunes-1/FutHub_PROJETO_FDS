@@ -45,7 +45,7 @@ class PeladaForm(forms.ModelForm):
         }
         labels = {
             'nome': 'Nome da Pelada',
-            'data': 'Data do Jogo',
+            'data_inicial': 'Data do Jogo',
             'hora': 'Horário',  
             'local': 'Local'
         }
