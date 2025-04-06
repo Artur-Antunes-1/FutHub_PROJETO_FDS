@@ -1,5 +1,14 @@
-﻿<form method='post'>
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type='submit'>Criar Pelada</button>
-</form>
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Criar Pelada</title>
+</head>
+<body>
+    <h1>Criar Nova Pelada</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>

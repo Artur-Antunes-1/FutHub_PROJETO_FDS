@@ -12,3 +12,6 @@ def criar_pelada(request):
     else:
         form = PeladaForm()
     return render(request, 'core/pelada_form.html', {'form': form})
+
+def pagina_inicial(request):
+    return render(request, 'core/home.html')
