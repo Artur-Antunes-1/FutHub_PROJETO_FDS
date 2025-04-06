@@ -30,8 +30,9 @@ A aplicação permitirá que jogadores:
 {https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1} 
 
 **Prints do jira**
-![print jira 01](print_backlog.jpg)
-![print jira 02](print_quadro_jira.jpg)
+![print jira 01](novo_print_backlog_jira.jpg)
+![print jira 02](novo_print_quadro_jira.jpg)
+![print jira 03](print_exemplo_historia_jira.jpg)
 
 **Link para protótipo do figma**
 {https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
