@@ -7,6 +7,19 @@ from .forms import PeladaForm
 from .models import Pelada
 from django.contrib.auth.forms import UserCreationForm
 
+@login_required
+def deletar_pelada(request, pelada_id):
+    pelada = get_object_or_404(Pelada, id=pelada_id)
+    
+    # Verifica se o usuário é o organizador ou superusuário
+    if request.user == pelada.organizador or request.user.is_superuser:
+        pelada.delete()
+        messages.success(request, "Pelada excluída com sucesso!")
+    else:
+        messages.error(request, "Você não tem permissão para excluir esta pelada.")
+    
+    return redirect('lista_peladas')
+    
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
