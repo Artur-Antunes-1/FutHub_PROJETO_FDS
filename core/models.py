@@ -43,8 +43,6 @@ class Pelada(models.Model):
 
     codigo_acesso = models.UUIDField(default=gerar_uuid, editable=False, unique=True)
 
-
-
     def __str__(self):
         recorrencia = " (semanal)" if self.recorrente else ""
         return f"{self.nome} - {self.data_inicial} {self.hora}{recorrencia}"
@@ -60,9 +58,11 @@ class Pelada(models.Model):
         super().save(*args, **kwargs)
 
 class Jogador(models.Model):
+    usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='jogador')
     nome = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     posicao = models.CharField(max_length=50, blank=True)
+    peladas = models.ManyToManyField(Pelada, through='Presenca', related_name='jogadores')
 
     def __str__(self):
         return self.nome
@@ -76,7 +76,7 @@ class Presenca(models.Model):
 def criar_jogador_automatico(sender, instance, created, **kwargs):
     if created:
         Jogador.objects.get_or_create(
+            usuario=instance,
             email=instance.email,
             defaults={'nome': instance.username}
         )
-

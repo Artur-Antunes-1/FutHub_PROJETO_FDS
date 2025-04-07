@@ -15,13 +15,20 @@ from .forms import PeladaForm
 def home(request):
     return render(request, 'core/home.html')
 
+def get_user_pelada_or_403(request, pk):
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+    pelada = get_object_or_404(Pelada, pk=pk)
+    if jogador not in pelada.participantes.all():
+        return HttpResponseForbidden("Você não participa desta pelada.")
+    return pelada
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             try:
                 user = form.save()
-                Jogador.objects.create(nome=user.username, email=user.email)
+                Jogador.objects.create(nome=user.username, email=user.email, usuario=user)
                 login(request, user)
                 messages.success(request, 'Conta criada com sucesso.')
                 return redirect('home')
@@ -35,27 +42,34 @@ def register_view(request):
 
 @login_required
 def lista_peladas(request):
-    peladas = Pelada.objects.all().order_by('-data_inicial')
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+    peladas = Pelada.objects.filter(participantes=jogador)
     return render(request, 'core/lista_peladas.html', {'peladas': peladas})
 
 @login_required
 def criar_pelada(request):
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+
     if request.method == 'POST':
         form = PeladaForm(request.POST)
         if form.is_valid():
             pelada = form.save(commit=False)
-            pelada.organizador = request.user
+            pelada.criador = jogador
             pelada.save()
-            return redirect('lista_peladas')
+            pelada.participantes.add(jogador)
+            return redirect('detalhes_pelada', pk=pelada.pk)
     else:
         form = PeladaForm()
+
     return render(request, 'core/pelada_form.html', {'form': form})
 
 @login_required
 def editar_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-    if pelada.organizador != request.user:
-        return HttpResponseForbidden()
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+
+    if pelada.criador != jogador:
+        return HttpResponseForbidden("Você não tem permissão para editar essa pelada.")
     
     if request.method == 'POST':
         form = PeladaForm(request.POST, instance=pelada)
@@ -66,22 +80,33 @@ def editar_pelada(request, pk):
         form = PeladaForm(instance=pelada)
     return render(request, 'core/pelada_form.html', {'form': form})
 
+
 @login_required
 def deletar_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-    if pelada.organizador != request.user:
-        return HttpResponseForbidden()
-    
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+
+    if pelada.criador != jogador:
+        return HttpResponseForbidden("Você não tem permissão para deletar essa pelada.")
+
     if request.method == 'POST':
         pelada.delete()
         return redirect('lista_peladas')
-    
+
     return redirect('detalhes_pelada', pk=pk)
+
 
 @login_required
 def detalhes_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
+    jogador = get_object_or_404(Jogador, usuario=request.user)
+
+    if jogador not in pelada.participantes.all():
+        return HttpResponseForbidden("Você não participa desta pelada.")
+    
     return render(request, 'core/detalhes_pelada.html', {'pelada': pelada})
+
+
 
 @login_required
 def confirmar_presenca(request, pk):
