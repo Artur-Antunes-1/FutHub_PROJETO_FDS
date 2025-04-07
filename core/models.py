@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
+import uuid
 
 class Pelada(models.Model):
     DIAS_DA_SEMANA = [
@@ -14,12 +15,11 @@ class Pelada(models.Model):
     ]
 
     nome = models.CharField(max_length=100)
-    data_inicial = models.DateField()  # Mudamos de 'data' para 'data_inicial'
+    data_inicial = models.DateField()  
     hora = models.TimeField(default='18:00:00')
     local = models.CharField(max_length=100)
     organizador = models.ForeignKey(User, on_delete=models.CASCADE)
     
-    # Campos novos para recorrência
     recorrente = models.BooleanField(default=False, verbose_name="Pelada semanal?")
     dia_semana = models.CharField(
         max_length=1, 
@@ -36,6 +36,9 @@ class Pelada(models.Model):
         null=True
     )
 
+    codigo_acesso = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+    participantes = models.ManyToManyField(User, through='Presenca', related_name='peladas_participantes')
+
     def __str__(self):
         recorrencia = " (semanal)" if self.recorrente else ""
         return f"{self.nome} - {self.data_inicial} {self.hora}{recorrencia}"
@@ -44,7 +47,6 @@ class Pelada(models.Model):
         return f"{self.data_inicial} {self.hora}"
 
     def save(self, *args, **kwargs):
-        # Se for recorrente, calcula o dia da semana automaticamente
         if self.recorrente and not self.dia_semana:
             self.dia_semana = str(self.data_inicial.weekday())  # 0=domingo, 1=segunda, etc.
         super().save(*args, **kwargs)

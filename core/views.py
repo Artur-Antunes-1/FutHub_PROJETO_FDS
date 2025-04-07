@@ -17,7 +17,6 @@ def editar_pelada(request, pelada_id):
     pelada = get_object_or_404(Pelada, id=pelada_id)
     if request.user != pelada.organizador:
         return HttpResponseForbidden()
-    # Implemente a lógica de edição aqui
 
 @login_required
 def confirmar_presenca(request, pelada_id):
