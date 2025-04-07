@@ -87,8 +87,28 @@ def lista_peladas(request):
     """
     View para listar todas as peladas agendadas.
     """
-    peladas = Pelada.objects.all().order_by('-data_inicial')
+    if request.user.is_authenticated:
+        # Peladas que o usuário criou OU que participa
+        peladas = Pelada.objects.filter(
+            models.Q(organizador=request.user) |
+            models.Q(participantes=request.user)
+        ).distinct().order_by('-data_inicial')
+    else:
+        peladas = Pelada.objects.none()
+    
     return render(request, 'core/lista_peladas.html', {'peladas': peladas})
+
+def entrar_com_codigo(request):
+    if request.method == 'POST':
+        codigo = request.POST.get('codigo')
+        try:
+            pelada = Pelada.objects.get(codigo_acesso=codigo)
+            Presenca.objects.get_or_create(jogador=request.user, pelada=pelada)
+            return redirect('detalhes_pelada', pelada_id=pelada.id)
+        except Pelada.DoesNotExist:
+            messages.error(request, "Código inválido ou pelada não encontrada")
+    
+    return render(request, 'core/entrar_com_codigo.html')
 
 @login_required
 def detalhes_pelada(request, pelada_id):
