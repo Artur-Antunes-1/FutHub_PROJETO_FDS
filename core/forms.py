@@ -4,21 +4,19 @@ from .models import Pelada
 class PeladaForm(forms.ModelForm):
     recorrente = forms.BooleanField(
         required=False,
-        label='Pelada semanal?',
+        label='Pelada semanal',
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
     
     semanas_duracao = forms.IntegerField(
         required=False,
-        label='Número de semanas',
+        label='Repetir por semanas',
         min_value=1,
         max_value=52,
         initial=4,
         widget=forms.NumberInput(attrs={
             'class': 'form-control',
-            'placeholder': 'Quantas semanas?',
-            'style': 'display: none;'  # Escondido por padrão
-        })
+            })
     )
 
     class Meta:
