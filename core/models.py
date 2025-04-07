@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 import uuid
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 class Pelada(models.Model):
     DIAS_DA_SEMANA = [
@@ -54,9 +56,18 @@ class Pelada(models.Model):
 class Jogador(models.Model):
     nome = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    posicao = models.CharField(max_length=50)
+    posicao = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return self.nome
 
 class Presenca(models.Model):
     jogador = models.ForeignKey(Jogador, on_delete=models.CASCADE)
     pelada = models.ForeignKey(Pelada, on_delete=models.CASCADE)
     confirmado = models.BooleanField(default=False)
+
+# Sinal: cria Jogador automaticamente ao registrar novo User
+@receiver(post_save, sender=User)
+def criar_jogador_automatico(sender, instance, created, **kwargs):
+    if created:
+        Jogador.objects.create(nome=instance.username, email=instance.email)
