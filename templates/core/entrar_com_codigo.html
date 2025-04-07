@@ -1,0 +1,14 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="codigo-container">
+    <h2>Entrar em Pelada com Código</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input type="text" name="codigo" placeholder="Digite o código da pelada" required>
+        </div>
+        <button type="submit" class="btn">Entrar</button>
+    </form>
+</div>
+{% endblock %}
