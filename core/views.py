@@ -39,7 +39,6 @@ def register_view(request):
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
-            Jogador.objects.create(nome=user.username, email=user.email)
             login(request, user)
             return redirect('home')
     else:
