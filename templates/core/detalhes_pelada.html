@@ -70,7 +70,7 @@
             <h3>📅 Data & Horário</h3>
             <p>{{ pelada.data_inicial|date:"d/m/Y" }} às {{ pelada.hora|time:"H:i" }}</p>
             {% if pelada.recorrente %}
-                <p>Repete por {{ pelada.semanas_duracao }} semanas</p>
+                <p>Repetição semanal no mesmo dia e horário</p>
             {% endif %}
         </div>
 

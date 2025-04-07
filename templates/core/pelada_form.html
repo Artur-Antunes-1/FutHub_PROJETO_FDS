@@ -96,18 +96,4 @@
 </div>
 {% endblock %}
 
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const checkbox = document.getElementById('id_recorrente');
-    const semanas = document.getElementById('semanas-container');
-
-    function toggleSemanas() {
-        semanas.style.display = checkbox.checked ? 'block' : 'none';
-    }
-
-    toggleSemanas();
-    checkbox.addEventListener('change', toggleSemanas);
-});
-</script>
-{% endblock %}
+{% block extra_js %}{% endblock %}
