@@ -23,9 +23,9 @@ class PeladaForm(forms.ModelForm):
 
     class Meta:
         model = Pelada
-        fields = ['nome', 'data', 'hora', 'local', 'recorrente', 'semanas_duracao']
+        fields = ['nome', 'data_inicial', 'hora', 'local', 'recorrente', 'semanas_duracao']
         widgets = {
-            'data': forms.DateInput(attrs={
+            'data_inicial': forms.DateInput(attrs={
                 'type': 'date',
                 'class': 'form-control',
                 'id': 'data-field'
