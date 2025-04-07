@@ -1,158 +1,148 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
-    <title>Criar Pelada</title>
-    <style>
-        .form-pelada {
-            max-width: 500px;
-            margin: 20px auto;
-            padding: 25px;
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-            background: white;
-        }
-        
-        .form-pelada h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .form-pelada label {
-            display: block;
-            margin: 15px 0 5px;
-            font-weight: 500;
-            color: #34495e;
-        }
-        
-        .form-pelada input[type="text"],
-        .form-pelada input[type="date"],
-        .form-pelada input[type="time"],
-        .form-pelada input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        
-        .checkbox-container {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-        }
-        
-        .checkbox-container input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            margin-right: 10px;
-        }
-        
-        #semanas-container {
-            margin: 15px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            border-left: 4px solid #4CAF50;
-            display: none;
-        }
-        
-        #semanas-container label {
-            margin-top: 0;
-        }
-        
-        .form-pelada button {
-            width: 100%;
-            background: #4CAF50;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 500;
-            margin-top: 20px;
-            transition: background 0.3s;
-        }
-        
-        .form-pelada button:hover {
-            background: #45a049;
-        }
-        
-        .alert {
-            padding: 15px;
-            margin: 20px auto;
-            max-width: 500px;
-            border-radius: 4px;
-        }
-        
-        .alert-warning {
-            background-color: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-        }
-        
-        .alert a {
-            color: #0056b3;
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
+﻿{% extends "core/base.html" %}
+
+{% block extra_css %}
+<style>
+    .form-container {
+        max-width: 600px;
+        margin: 30px auto;
+        padding: 30px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+    .form-container h1 {
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 25px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #34495e;
+    }
+    .form-group input[type="text"],
+    .form-group input[type="date"],
+    .form-group input[type="time"],
+    .form-group input[type="number"],
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        box-sizing: border-box;
+    }
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        margin: 25px 0;
+    }
+    .checkbox-group input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+    #semanas-container {
+        margin: 20px 0;
+        padding: 20px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border-left: 4px solid #4CAF50;
+    }
+    .btn-submit {
+        width: 100%;
+        padding: 14px;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 20px;
+        transition: background 0.3s;
+    }
+    .btn-submit:hover {
+        background: #45a049;
+    }
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-container">
     {% if not user.is_authenticated %}
-    <div class="alert alert-warning">
+    <div class="alert">
         <a href="{% url 'login' %}?next={{ request.path }}">Faça login</a> para criar peladas.
     </div>
     {% else %}
-    <div class="form-pelada">
-        <h1>Criar Nova Pelada</h1>
-        <form method="post">
-            {% csrf_token %}
-            
+    <h1>{% if object %}Editar{% else %}Criar{% endif %} Pelada</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
             <label for="id_nome">Nome da Pelada</label>
             {{ form.nome }}
-            
+        </div>
+        
+        <div class="form-group">
             <label for="id_data_inicial">Data</label>
             {{ form.data_inicial }}
-    
+        </div>
+        
+        <div class="form-group">
             <label for="id_hora">Horário</label>
             {{ form.hora }}
-            
+        </div>
+        
+        <div class="form-group">
             <label for="id_local">Local</label>
             {{ form.local }}
-            
-            <div class="checkbox-container">
-                {{ form.recorrente }}
-                <label for="id_recorrente" style="margin-bottom:0; cursor:pointer;">Pelada semanal</label>
-            </div>
-            
-            <div id="semanas-container">
+        </div>
+        
+        <div class="checkbox-group">
+            {{ form.recorrente }}
+            <label for="id_recorrente">Pelada semanal</label>
+        </div>
+        
+        <div id="semanas-container">
+            <div class="form-group">
                 <label for="id_semanas_duracao">Repetir por quantas semanas</label>
                 {{ form.semanas_duracao }}
             </div>
-            
-            <button type="submit">Salvar Pelada</button>
-        </form>
-    </div>
-    
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const checkbox = document.getElementById('id_recorrente');
-        const container = document.getElementById('semanas-container');
+        </div>
         
-        // Mostrar/ocultar ao carregar a página (para caso de edição)
-        if(checkbox.checked) {
-            container.style.display = 'block';
-        }
-        
-        // Atualizar quando o checkbox muda
-        checkbox.addEventListener('change', function() {
-            container.style.display = this.checked ? 'block' : 'none';
-        });
-    });
-    </script>
+        <button type="submit" class="btn-submit">Salvar Pelada</button>
+    </form>
     {% endif %}
-</body>
-</html>
+</div>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('id_recorrente');
+    const container = document.getElementById('semanas-container');
+    
+    function toggleSemanasContainer() {
+        container.style.display = checkbox.checked ? 'block' : 'none';
+    }
+    
+    // Inicialização
+    toggleSemanasContainer();
+    
+    // Event listener
+    checkbox.addEventListener('change', toggleSemanasContainer);
+});
+</script>
+{% endblock %}
+{% endblock %}
