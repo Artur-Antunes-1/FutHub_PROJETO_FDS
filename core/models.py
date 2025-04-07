@@ -14,7 +14,7 @@ class Pelada(models.Model):
     ]
 
     nome = models.CharField(max_length=100)
-    data_inicial = models.DateField(verbose_name="Data inicial")  # Mudamos de 'data' para 'data_inicial'
+    data_inicial = models.DateField()  # Mudamos de 'data' para 'data_inicial'
     hora = models.TimeField(default='18:00:00')
     local = models.CharField(max_length=100)
     organizador = models.ForeignKey(User, on_delete=models.CASCADE)
