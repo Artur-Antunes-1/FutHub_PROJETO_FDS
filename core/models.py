@@ -75,4 +75,8 @@ class Presenca(models.Model):
 @receiver(post_save, sender=User)
 def criar_jogador_automatico(sender, instance, created, **kwargs):
     if created:
-        Jogador.objects.create(nome=instance.username, email=instance.email)
+        Jogador.objects.get_or_create(
+            email=instance.email,
+            defaults={'nome': instance.username}
+        )
+
