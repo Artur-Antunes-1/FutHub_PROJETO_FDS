@@ -80,19 +80,29 @@ def editar_pelada(request, pelada_id):
 
 @login_required
 def lista_peladas(request):
-    if request.user.is_authenticated:
-        try:
-            jogador = Jogador.objects.get(email=request.user.email)
-            peladas = Pelada.objects.filter(
-                models.Q(organizador=request.user) |
-                models.Q(presenca__jogador=jogador)
-            ).distinct().order_by('-data_inicial')
-        except Jogador.DoesNotExist:
-            peladas = Pelada.objects.filter(organizador=request.user)
-    else:
-        peladas = Pelada.objects.none()
+    peladas = Pelada.objects.none()
+    participante_em = []
 
-    return render(request, 'core/lista_peladas.html', {'peladas': peladas})
+    try:
+        jogador = Jogador.objects.get(email=request.user.email)
+        peladas = Pelada.objects.filter(
+            models.Q(organizador=request.user) |
+            models.Q(presenca__jogador=jogador)
+        ).distinct().order_by('-data_inicial')
+
+        participante_em = set(
+            Presenca.objects.filter(jogador=jogador).values_list('pelada_id', flat=True)
+        )
+
+    except Jogador.DoesNotExist:
+        peladas = Pelada.objects.filter(organizador=request.user)
+
+    context = {
+        'peladas': peladas,
+        'participante_em': participante_em
+    }
+    return render(request, 'core/lista_peladas.html', context)
+
 
 @login_required
 def detalhes_pelada(request, pelada_id):
