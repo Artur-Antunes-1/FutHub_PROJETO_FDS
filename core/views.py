@@ -5,8 +5,19 @@ from django.contrib import messages
 from django.utils import timezone 
 from .forms import PeladaForm
 from .models import Pelada
+from django.contrib.auth.forms import UserCreationForm
 
-# Nova view de login
+def register_view(request):
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)  # Loga o usuário automaticamente após o registro
+            return redirect('home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'core/register.html', {'form': form})
+
 def login_view(request):
     """
     View personalizada para login de usuários.
