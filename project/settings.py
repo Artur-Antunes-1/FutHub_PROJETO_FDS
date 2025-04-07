@@ -101,6 +101,9 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+LOGIN_URL = '/accounts/login/'  # URL para redirecionamento quando @login_required é acionado
+LOGIN_REDIRECT_URL = '/'        # URL para redirecionar após login bem-sucedido
+LOGOUT_REDIRECT_URL = '/'       # URL para redirecionar após logout
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.1/topics/i18n/
