@@ -8,6 +8,19 @@ from .models import Pelada
 from django.contrib.auth.forms import UserCreationForm
 
 @login_required
+def editar_pelada(request, pelada_id):
+    pelada = get_object_or_404(Pelada, id=pelada_id)
+    if request.user != pelada.organizador:
+        return HttpResponseForbidden()
+    # Implemente a lógica de edição aqui
+
+@login_required
+def confirmar_presenca(request, pelada_id):
+    pelada = get_object_or_404(Pelada, id=pelada_id)
+    Presenca.objects.get_or_create(jogador=request.user.jogador, pelada=pelada)
+    return redirect('detalhes_pelada', pelada_id=pelada.id)
+    
+@login_required
 def deletar_pelada(request, pelada_id):
     pelada = get_object_or_404(Pelada, id=pelada_id)
     
@@ -19,7 +32,7 @@ def deletar_pelada(request, pelada_id):
         messages.error(request, "Você não tem permissão para excluir esta pelada.")
     
     return redirect('lista_peladas')
-    
+
 def register_view(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
