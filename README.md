@@ -42,3 +42,8 @@ A aplicação permitirá que jogadores:
 
 
 ## Segunda Entrega
+
+**Prints do jira**
+![print jira 01](printbacklog_entrega2.jpg)
+![print jira 02](printquadro_entrega2.jpg)
+![print jira 03](bugtracker_entrega2.jpg)
