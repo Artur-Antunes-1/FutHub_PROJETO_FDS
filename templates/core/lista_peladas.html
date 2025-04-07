@@ -119,7 +119,7 @@
         <div class="pelada-card">
             {% if user == pelada.organizador %}
                 <span class="badge badge-owner">Organizador</span>
-            {% elif user.email in pelada.presenca_set.values_list('jogador__email', flat=True) %}
+            {% elif pelada.id in participante_em %}
                 <span class="badge badge-participant">Participante</span>
             {% endif %}
 
