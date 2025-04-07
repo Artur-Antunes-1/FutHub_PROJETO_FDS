@@ -39,3 +39,6 @@ A aplicação permitirá que jogadores:
 
 **Link para screencast no youtube**
 {[FutHub_PROJETO_FDS](https://youtu.be/ffIBYHROJXc)}
+
+
+## Segunda Entrega
