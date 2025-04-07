@@ -9,6 +9,6 @@ urlpatterns = [
     path('peladas/<int:pelada_id>/', views.detalhes_pelada, name='detalhes_pelada'),
     
     # URLs de autenticação
-    path('accounts/login/', auth_views.LoginView.as_view(template_name='core/login.html'), name='login'),
+    path('accounts/login/', views.login_view, name='login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
