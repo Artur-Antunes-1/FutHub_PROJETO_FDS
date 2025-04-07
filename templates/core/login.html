@@ -5,44 +5,48 @@
     .login-form {
         max-width: 400px;
         margin: 50px auto;
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 5px;
+        padding: 30px;
+        border-radius: 6px;
         background: white;
         box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+
     .login-form h2 {
         text-align: center;
         color: #2c3e50;
+        margin-bottom: 20px;
     }
-    .login-form .form-group {
+
+    .form-group {
         margin-bottom: 15px;
     }
-    .login-form input {
+
+    input[type="text"],
+    input[type="password"] {
         width: 100%;
         padding: 12px;
-        margin: 8px 0;
-        border: 1px solid #ddd;
+        border: 1px solid #ccc;
         border-radius: 4px;
-        box-sizing: border-box;
     }
-    .login-form button {
+
+    .btn-submit {
         width: 100%;
         padding: 12px;
-        background: #4CAF50;
+        background-color: #4CAF50;
         color: white;
         border: none;
         border-radius: 4px;
-        cursor: pointer;
         font-size: 16px;
-        margin-top: 10px;
+        cursor: pointer;
     }
-    .login-form button:hover {
-        background: #45a049;
+
+    .btn-submit:hover {
+        background-color: #45a049;
     }
+
     .register-link {
-        text-align: center;
         margin-top: 15px;
+        text-align: center;
     }
 </style>
 {% endblock %}
@@ -50,12 +54,12 @@
 {% block content %}
 <div class="login-form">
     <h2>Login</h2>
-    {% if form.errors %}
-        <div class="error-message">
-            Usuário ou senha incorretos. Tente novamente.
-        </div>
+    {% if messages %}
+        {% for message in messages %}
+            <p class="error">{{ message }}</p>
+        {% endfor %}
     {% endif %}
-    
+
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -64,11 +68,11 @@
         <div class="form-group">
             <input type="password" name="password" placeholder="Senha" required>
         </div>
-        <button type="submit">Entrar</button>
+        <button type="submit" class="btn-submit">Entrar</button>
     </form>
-    
+
     <p class="register-link">
-        Não tem conta? <a href="{% url 'register' %}">Registre-se aqui</a>
+        Não tem conta? <a href="{% url 'register' %}">Cadastre-se</a>
     </p>
 </div>
 {% endblock %}
