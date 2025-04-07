@@ -1,12 +1,17 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils import timezone 
 from .forms import PeladaForm
 from .models import Pelada
 from django.contrib.auth.forms import UserCreationForm
 
+def custom_logout(request):
+    logout(request)
+    messages.success(request, "Você saiu da sua conta com sucesso.")
+    return redirect('home')
+    
 @login_required
 def editar_pelada(request, pelada_id):
     pelada = get_object_or_404(Pelada, id=pelada_id)
@@ -19,7 +24,7 @@ def confirmar_presenca(request, pelada_id):
     pelada = get_object_or_404(Pelada, id=pelada_id)
     Presenca.objects.get_or_create(jogador=request.user.jogador, pelada=pelada)
     return redirect('detalhes_pelada', pelada_id=pelada.id)
-    
+
 @login_required
 def deletar_pelada(request, pelada_id):
     pelada = get_object_or_404(Pelada, id=pelada_id)
