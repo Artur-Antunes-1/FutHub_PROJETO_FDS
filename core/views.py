@@ -8,7 +8,7 @@ from django.contrib.auth import logout as auth_logout
 from django.http import HttpResponseForbidden
 from django.db import IntegrityError
 from uuid import UUID
-
+from django.contrib.auth import login as auth_login
 from .models import Pelada, Presenca, Jogador
 from .forms import PeladaForm
 
@@ -109,3 +109,16 @@ def entrar_com_codigo(request):
 def logout_view(request):
     auth_logout(request)
     return redirect('home')
+
+def custom_login(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            auth_login(request, user)
+            return redirect('home')
+        else:
+            messages.error(request, 'Email ou senha inválidos.')
+    else:
+        form = AuthenticationForm()
+    return render(request, 'registration/login.html', {'form': form})
