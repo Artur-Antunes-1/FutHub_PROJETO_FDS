@@ -11,7 +11,7 @@ urlpatterns = [
     path('peladas/<int:pelada_id>/deletar/', views.deletar_pelada, name='deletar_pelada'),
     path('peladas/<int:pelada_id>/editar/', views.editar_pelada, name='editar_pelada'),
     path('peladas/<int:pelada_id>/confirmar/', views.confirmar_presenca, name='confirmar_presenca'),
-    
+    path('peladas/entrar-com-codigo/', views.entrar_com_codigo, name='entrar_com_codigo'),
     # URLs de autenticação
     path('accounts/login/', views.login_view, name='login'),
     path('accounts/logout/', custom_logout, name='logout'),
