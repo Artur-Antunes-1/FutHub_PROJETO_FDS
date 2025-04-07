@@ -24,11 +24,7 @@
         font-weight: 500;
         color: #34495e;
     }
-    .form-group input[type="text"],
-    .form-group input[type="date"],
-    .form-group input[type="time"],
-    .form-group input[type="number"],
-    .form-group select {
+    .form-control {
         width: 100%;
         padding: 12px;
         border: 1px solid #ddd;
@@ -40,18 +36,6 @@
         display: flex;
         align-items: center;
         margin: 25px 0;
-    }
-    .checkbox-group input[type="checkbox"] {
-        width: 20px;
-        height: 20px;
-        margin-right: 10px;
-    }
-    #semanas-container {
-        margin: 20px 0;
-        padding: 20px;
-        background: #f8f9fa;
-        border-radius: 6px;
-        border-left: 4px solid #4CAF50;
     }
     .btn-submit {
         width: 100%;
@@ -68,81 +52,68 @@
     .btn-submit:hover {
         background: #45a049;
     }
-    .alert {
-        padding: 15px;
-        margin-bottom: 20px;
-        border-radius: 4px;
-        background-color: #fff3cd;
-        border: 1px solid #ffeeba;
-        color: #856404;
-    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="form-container">
-    {% if not user.is_authenticated %}
-    <div class="alert">
-        <a href="{% url 'login' %}?next={{ request.path }}">Faça login</a> para criar peladas.
-    </div>
-    {% else %}
     <h1>{% if object %}Editar{% else %}Criar{% endif %} Pelada</h1>
     <form method="post">
         {% csrf_token %}
-        
+        {{ form.non_field_errors }}
+
         <div class="form-group">
-            <label for="id_nome">Nome da Pelada</label>
+            {{ form.nome.label_tag }}
             {{ form.nome }}
+            {{ form.nome.errors }}
         </div>
-        
+
         <div class="form-group">
-            <label for="id_data_inicial">Data</label>
+            {{ form.data_inicial.label_tag }}
             {{ form.data_inicial }}
+            {{ form.data_inicial.errors }}
         </div>
-        
+
         <div class="form-group">
-            <label for="id_hora">Horário</label>
+            {{ form.hora.label_tag }}
             {{ form.hora }}
+            {{ form.hora.errors }}
         </div>
-        
+
         <div class="form-group">
-            <label for="id_local">Local</label>
+            {{ form.local.label_tag }}
             {{ form.local }}
+            {{ form.local.errors }}
         </div>
-        
+
         <div class="checkbox-group">
             {{ form.recorrente }}
-            <label for="id_recorrente">Pelada semanal</label>
+            {{ form.recorrente.label_tag }}
         </div>
-        
-        <div id="semanas-container">
-            <div class="form-group">
-                <label for="id_semanas_duracao">Repetir por quantas semanas</label>
-                {{ form.semanas_duracao }}
-            </div>
+
+        <div id="semanas-container" class="form-group">
+            {{ form.semanas_duracao.label_tag }}
+            {{ form.semanas_duracao }}
+            {{ form.semanas_duracao.errors }}
         </div>
-        
+
         <button type="submit" class="btn-submit">Salvar Pelada</button>
     </form>
-    {% endif %}
 </div>
+{% endblock %}
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const checkbox = document.getElementById('id_recorrente');
-    const container = document.getElementById('semanas-container');
-    
-    function toggleSemanasContainer() {
-        container.style.display = checkbox.checked ? 'block' : 'none';
+    const semanas = document.getElementById('semanas-container');
+
+    function toggleSemanas() {
+        semanas.style.display = checkbox.checked ? 'block' : 'none';
     }
-    
-    // Inicialização
-    toggleSemanasContainer();
-    
-    // Event listener
-    checkbox.addEventListener('change', toggleSemanasContainer);
+
+    toggleSemanas();
+    checkbox.addEventListener('change', toggleSemanas);
 });
 </script>
-{% endblock %}
 {% endblock %}
