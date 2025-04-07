@@ -16,7 +16,7 @@ class PeladaForm(forms.ModelForm):
         initial=4,
         widget=forms.NumberInput(attrs={
             'class': 'form-control',
-            })
+        })
     )
 
     class Meta:
@@ -50,18 +50,19 @@ class PeladaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Se estiver editando uma pelada existente, mostra o campo de semanas se for recorrente
-        if self.instance and self.instance.recorrente:
-            self.fields['semanas_duracao'].widget.attrs['style'] = 'display: block;'
+
+        # Oculta campo de semanas se não for recorrente
+        if self.instance and not self.instance.recorrente:
+            self.fields['semanas_duracao'].widget.attrs['style'] = 'display: none;'
 
     def clean(self):
         cleaned_data = super().clean()
         recorrente = cleaned_data.get('recorrente')
-        semanas_duracao = cleaned_data.get('semanas_duracao')
-        
-        if recorrente and not semanas_duracao:
+        semanas = cleaned_data.get('semanas_duracao')
+
+        if recorrente and not semanas:
             cleaned_data['semanas_duracao'] = 4  # Valor padrão
-        elif recorrente and semanas_duracao < 1:
+        elif recorrente and semanas and semanas < 1:
             self.add_error('semanas_duracao', 'O número de semanas deve ser pelo menos 1')
         
         return cleaned_data
