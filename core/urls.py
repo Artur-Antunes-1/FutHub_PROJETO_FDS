@@ -13,9 +13,9 @@ urlpatterns = [
     # Peladas
     path('peladas/', views.lista_peladas, name='lista_peladas'),
     path('peladas/criar/', views.criar_pelada, name='criar_pelada'),
-    path('peladas/<int:pelada_id>/', views.detalhes_pelada, name='detalhes_pelada'),
-    path('peladas/<int:pelada_id>/editar/', views.editar_pelada, name='editar_pelada'),
-    path('peladas/<int:pelada_id>/deletar/', views.deletar_pelada, name='deletar_pelada'),
-    path('peladas/<int:pelada_id>/confirmar/', views.confirmar_presenca, name='confirmar_presenca'),
+    path('peladas/<int:pk>/', views.detalhes_pelada, name='detalhes_pelada'),
+    path('peladas/<int:pk>/editar/', views.editar_pelada, name='editar_pelada'),
+    path('peladas/<int:pk>/deletar/', views.deletar_pelada, name='deletar_pelada'),
+    path('peladas/<int:pk>/confirmar/', views.confirmar_presenca, name='confirmar_presenca'),
     path('peladas/entrar-com-codigo/', views.entrar_com_codigo, name='entrar_com_codigo'),
 ]
