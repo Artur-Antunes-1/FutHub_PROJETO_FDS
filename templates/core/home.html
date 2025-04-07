@@ -47,11 +47,11 @@
 {% block content %}
 <div class="welcome-container">
     <h1>Bem-vindo ao FutHub!</h1>
-    <p>Crie e gerencie suas peladas de futebol</p>
-    
+    <p>Crie e gerencie suas peladas de futebol com facilidade.</p>
+
     {% if user.is_authenticated %}
         <a href="{% url 'criar_pelada' %}" class="btn-primary">Nova Pelada</a>
-        <a href="{% url 'lista_peladas' %}" class="btn-primary">Ver Peladas</a>
+        <a href="{% url 'lista_peladas' %}" class="btn-primary">Minhas Peladas</a>
     {% else %}
         <div class="auth-links">
             <a href="{% url 'login' %}" class="btn-primary">Login</a>
