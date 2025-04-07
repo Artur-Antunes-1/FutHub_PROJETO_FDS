@@ -8,30 +8,18 @@ class PeladaForm(forms.ModelForm):
         widget=forms.CheckboxInput(attrs={'class': 'form-check-input'})
     )
     
-    semanas_duracao = forms.IntegerField(
-        required=False,
-        label='Repetir por semanas',
-        min_value=1,
-        max_value=52,
-        initial=4,
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',
-        })
-    )
-
     class Meta:
         model = Pelada
-        fields = ['nome', 'data_inicial', 'hora', 'local', 'recorrente', 'semanas_duracao']
+        fields = ['nome', 'data_inicial', 'hora', 'local', 'recorrente']
         widgets = {
             'data_inicial': forms.DateInput(attrs={
                 'type': 'date',
-                'class': 'form-control',
-                'id': 'data-field'
+                'class': 'form-control'
             }),
             'hora': forms.TimeInput(attrs={
                 'type': 'time',
                 'class': 'form-control'
-            }),  
+            }),
             'nome': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Nome da pelada'
@@ -39,9 +27,10 @@ class PeladaForm(forms.ModelForm):
             'local': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Local do jogo'
-            })
-        }
-        labels = {
+            }),
+    }
+
+    labels = {
             'nome': 'Nome da Pelada',
             'data_inicial': 'Data do Jogo',
             'hora': 'Horário',  
