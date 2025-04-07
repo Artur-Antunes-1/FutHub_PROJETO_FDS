@@ -1,19 +1,21 @@
 from django.urls import path
-from django.contrib.auth import views as auth_views 
 from . import views
-from .views import custom_logout
 
 urlpatterns = [
+    # Página inicial
     path('', views.pagina_inicial, name='home'),
-    path('peladas/criar/', views.criar_pelada, name='criar_pelada'),
+
+    # Autenticação
+    path('accounts/login/', views.login_view, name='login'),
+    path('accounts/logout/', views.custom_logout, name='logout'),
+    path('accounts/register/', views.register_view, name='register'),
+
+    # Peladas
     path('peladas/', views.lista_peladas, name='lista_peladas'),
+    path('peladas/criar/', views.criar_pelada, name='criar_pelada'),
     path('peladas/<int:pelada_id>/', views.detalhes_pelada, name='detalhes_pelada'),
-    path('peladas/<int:pelada_id>/deletar/', views.deletar_pelada, name='deletar_pelada'),
     path('peladas/<int:pelada_id>/editar/', views.editar_pelada, name='editar_pelada'),
+    path('peladas/<int:pelada_id>/deletar/', views.deletar_pelada, name='deletar_pelada'),
     path('peladas/<int:pelada_id>/confirmar/', views.confirmar_presenca, name='confirmar_presenca'),
     path('peladas/entrar-com-codigo/', views.entrar_com_codigo, name='entrar_com_codigo'),
-    # URLs de autenticação
-    path('accounts/login/', views.login_view, name='login'),
-    path('accounts/logout/', custom_logout, name='logout'),
-    path('accounts/register/', views.register_view, name='register'),
 ]
