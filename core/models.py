@@ -1,9 +1,12 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
-import uuid
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+import uuid
+
+def gerar_uuid():
+    return uuid.uuid4()
 
 class Pelada(models.Model):
     DIAS_DA_SEMANA = [
@@ -17,16 +20,16 @@ class Pelada(models.Model):
     ]
 
     nome = models.CharField(max_length=100)
-    data_inicial = models.DateField()  
+    data_inicial = models.DateField()
     hora = models.TimeField(default='18:00:00')
     local = models.CharField(max_length=100)
     organizador = models.ForeignKey(User, on_delete=models.CASCADE)
-    
+
     recorrente = models.BooleanField(default=False, verbose_name="Pelada semanal?")
     dia_semana = models.CharField(
-        max_length=1, 
-        choices=DIAS_DA_SEMANA, 
-        blank=True, 
+        max_length=1,
+        choices=DIAS_DA_SEMANA,
+        blank=True,
         null=True,
         verbose_name="Dia da semana"
     )
@@ -38,8 +41,9 @@ class Pelada(models.Model):
         null=True
     )
 
-    codigo_acesso = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
-    participantes = models.ManyToManyField(User, through='Presenca', related_name='peladas_participantes')
+    codigo_acesso = models.UUIDField(default=gerar_uuid, editable=False, unique=True)
+
+
 
     def __str__(self):
         recorrencia = " (semanal)" if self.recorrente else ""
@@ -50,7 +54,9 @@ class Pelada(models.Model):
 
     def save(self, *args, **kwargs):
         if self.recorrente and not self.dia_semana:
-            self.dia_semana = str(self.data_inicial.weekday())  # 0=domingo, 1=segunda, etc.
+            self.dia_semana = str(self.data_inicial.weekday())
+        if not self.codigo_acesso:
+            self.codigo_acesso = gerar_uuid()
         super().save(*args, **kwargs)
 
 class Jogador(models.Model):
@@ -66,7 +72,6 @@ class Presenca(models.Model):
     pelada = models.ForeignKey(Pelada, on_delete=models.CASCADE)
     confirmado = models.BooleanField(default=False)
 
-# Sinal: cria Jogador automaticamente ao registrar novo User
 @receiver(post_save, sender=User)
 def criar_jogador_automatico(sender, instance, created, **kwargs):
     if created:
