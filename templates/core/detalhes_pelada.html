@@ -50,8 +50,6 @@
         margin-top: 30px;
     }
     .participante-item {
-        display: flex;
-        align-items: center;
         padding: 10px;
         border-bottom: 1px solid #eee;
     }
@@ -79,7 +77,6 @@
         <div class="info-card">
             <h3>📍 Local</h3>
             <p>{{ pelada.local }}</p>
-            <a href="#" class="map-link">Ver no mapa</a>
         </div>
 
         <div class="info-card">
@@ -89,13 +86,13 @@
     </div>
 
     <div class="participantes-section">
-        <h2>Jogadores Confirmados ({{ pelada.presenca_set.count }})</h2>
+        <h2>Jogadores Confirmados</h2>
         <div class="participantes-list">
             {% for presenca in pelada.presenca_set.all %}
                 <div class="participante-item">
                     <span>{{ presenca.jogador.nome }}</span>
                     {% if presenca.jogador.posicao %}
-                        <span class="posicao-badge">{{ presenca.jogador.posicao }}</span>
+                        • {{ presenca.jogador.posicao }}
                     {% endif %}
                 </div>
             {% empty %}
@@ -106,7 +103,7 @@
 
     <div class="action-buttons">
         <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
-        
+
         {% if user == pelada.organizador or user.is_superuser %}
             <a href="{% url 'editar_pelada' pelada.id %}" class="btn btn-edit">✏️ Editar</a>
             <form method="post" action="{% url 'deletar_pelada' pelada.id %}" style="display: inline;">
@@ -116,7 +113,7 @@
                 </button>
             </form>
         {% endif %}
-        
+
         {% if user.is_authenticated %}
             <form method="post" action="{% url 'confirmar_presenca' pelada.id %}" style="display: inline;">
                 {% csrf_token %}
