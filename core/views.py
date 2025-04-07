@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone 
 from .forms import PeladaForm
-from .models import Pelada  # Importação adicionada
+from .models import Pelada  
 
 @login_required
 def criar_pelada(request):
