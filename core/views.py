@@ -5,7 +5,7 @@ from django.contrib import messages
 from django.utils import timezone 
 from django.contrib.auth.forms import UserCreationForm
 from django.http import HttpResponseForbidden
-
+from django.db import models
 from .forms import PeladaForm
 from .models import Pelada, Presenca, Jogador
 
