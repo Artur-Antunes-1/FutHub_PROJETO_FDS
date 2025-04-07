@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ pelada.nome }}</title>
+</head>
+<body>
+    <h1>{{ pelada.nome }}</h1>
+    <p>Data: {{ pelada.data_inicial }}</p>
+    <p>Horário: {{ pelada.hora }}</p>
+    <p>Local: {{ pelada.local }}</p>
+    <p>Organizador: {{ pelada.organizador.username }}</p>
+    <a href="{% url 'lista_peladas' %}">Voltar para a lista</a>
+</body>
+</html>

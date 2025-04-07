@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Peladas Agendadas</title>
+</head>
+<body>
+    <h1>Peladas Agendadas</h1>
+    
+    {% for pelada in peladas %}
+    <div>
+        <h3>{{ pelada.nome }}</h3>
+        <p>Data: {{ pelada.data_inicial }} às {{ pelada.hora }}</p>
+        <p>Local: {{ pelada.local }}</p>
+        <a href="{% url 'detalhes_pelada' pelada.id %}">Ver detalhes</a>
+    </div>
+    {% endfor %}
+    
+    <a href="{% url 'criar_pelada' %}">Criar Nova Pelada</a>
+</body>
+</html>

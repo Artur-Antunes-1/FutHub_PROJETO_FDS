@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+    <style>
+        .login-form {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .login-form h2 {
+            text-align: center;
+        }
+        .login-form input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .login-form button {
+            width: 100%;
+            padding: 10px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-form">
+        <h2>Login</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Entrar</button>
+        </form>
+    </div>
+</body>
+</html>
