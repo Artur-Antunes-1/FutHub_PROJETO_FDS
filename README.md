@@ -47,3 +47,6 @@ A aplicação permitirá que jogadores:
 ![print jira 01](printbacklog_entrega2.jpg)
 ![print jira 02](printquadro_entrega2.jpg)
 ![print jira 03](bugtracker_entrega2.jpg)
+
+**Link para screencast no youtube**
+{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
