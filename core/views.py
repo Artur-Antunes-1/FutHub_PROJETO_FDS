@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.utils import timezone
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth import logout as auth_logout
@@ -9,6 +8,8 @@ from django.http import HttpResponseForbidden
 from django.db import IntegrityError
 from uuid import UUID
 from django.contrib.auth import login as auth_login
+from django.db.models import Q
+
 from .models import Pelada, Presenca, Jogador
 from .forms import PeladaForm
 
@@ -18,7 +19,7 @@ def home(request):
 def get_user_pelada_or_403(request, pk):
     jogador = get_object_or_404(Jogador, usuario=request.user)
     pelada = get_object_or_404(Pelada, pk=pk)
-    if not Presenca.objects.filter(pelada=pelada, jogador=jogador).exists():
+    if not pelada.jogadores.filter(id=jogador.id).exists():
         return HttpResponseForbidden("Você não participa desta pelada.")
     return pelada
 
@@ -42,8 +43,22 @@ def register_view(request):
 
 @login_required
 def lista_peladas(request):
-    jogador = get_object_or_404(Jogador, usuario=request.user)
-    peladas = Pelada.objects.filter(presenca__jogador=jogador).distinct()
+    try:
+        jogador = Jogador.objects.get(usuario=request.user)
+    except Jogador.DoesNotExist:
+        jogador_existente = Jogador.objects.filter(email=request.user.email).first()
+        if jogador_existente:
+            jogador_existente.usuario = request.user
+            jogador_existente.save()
+            jogador = jogador_existente
+        else:
+            jogador = Jogador.objects.create(
+                usuario=request.user,
+                nome=request.user.username,
+                email=request.user.email
+            )
+
+    peladas = Pelada.objects.filter(jogadores=jogador).distinct()
     return render(request, 'core/lista_peladas.html', {'peladas': peladas})
 
 @login_required
@@ -52,19 +67,24 @@ def criar_pelada(request):
         form = PeladaForm(request.POST)
         if form.is_valid():
             pelada = form.save(commit=False)
-            pelada.organizador = request.user  # já está correto
+            pelada.organizador = request.user
             pelada.save()
-            pelada.jogadores.add(request.user)  # já está correto
-            return redirect('detalhes_pelada', pk=pelada.pk)  # corrigido aqui
+
+            jogador = Jogador.objects.get(usuario=request.user)
+
+            # Cria a relação manualmente via Presenca
+            Presenca.objects.create(pelada=pelada, jogador=jogador, confirmado=False)
+
+            return redirect('detalhes_pelada', pk=pelada.pk)
     else:
         form = PeladaForm()
-    return render(request, 'peladas/criar_pelada.html', {'form': form})
+    return render(request, 'core/pelada_form.html', {'form': form})
+
 
 @login_required
 def editar_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-    jogador = get_object_or_404(Jogador, usuario=request.user)
-    if pelada.organizador != jogador:
+    if pelada.organizador != request.user:
         return HttpResponseForbidden("Você não tem permissão para editar essa pelada.")
     if request.method == 'POST':
         form = PeladaForm(request.POST, instance=pelada)
@@ -78,8 +98,7 @@ def editar_pelada(request, pk):
 @login_required
 def deletar_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-    jogador = get_object_or_404(Jogador, usuario=request.user)
-    if pelada.organizador != jogador:
+    if pelada.organizador != request.user:
         return HttpResponseForbidden("Você não tem permissão para deletar essa pelada.")
     if request.method == 'POST':
         pelada.delete()
@@ -88,9 +107,9 @@ def deletar_pelada(request, pk):
 
 @login_required
 def detalhes_pelada(request, pk):
-    pelada = get_object_or_404(Pelada, pk=pk)
     jogador = get_object_or_404(Jogador, usuario=request.user)
-    if not Presenca.objects.filter(pelada=pelada, jogador=jogador).exists():
+    pelada = get_object_or_404(Pelada, pk=pk)
+    if not pelada.jogadores.filter(id=jogador.id).exists():
         return HttpResponseForbidden("Você não participa desta pelada.")
     return render(request, 'core/detalhes_pelada.html', {'pelada': pelada})
 
@@ -98,6 +117,8 @@ def detalhes_pelada(request, pk):
 def confirmar_presenca(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
     jogador = get_object_or_404(Jogador, usuario=request.user)
+    if not pelada.jogadores.filter(id=jogador.id).exists():
+        return HttpResponseForbidden("Você não participa desta pelada.")
     Presenca.objects.update_or_create(
         pelada=pelada,
         jogador=jogador,
@@ -114,9 +135,10 @@ def entrar_com_codigo(request):
             uuid_codigo = UUID(codigo.strip())
             pelada = get_object_or_404(Pelada, codigo_acesso=uuid_codigo)
             jogador = get_object_or_404(Jogador, usuario=request.user)
-            Presenca.objects.get_or_create(pelada=pelada, jogador=jogador)
+
+            pelada.jogadores.add(jogador)
             messages.success(request, f"Você entrou na pelada '{pelada.nome}'!")
-            return redirect('detalhes_pelada', pk=pelada.pk)  # corrigido aqui
+            return redirect('detalhes_pelada', pk=pelada.pk)
         except (ValueError, Pelada.DoesNotExist):
             messages.error(request, "Código inválido ou pelada não encontrada.")
     return render(request, 'core/entrar_com_codigo.html')
