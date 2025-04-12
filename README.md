@@ -50,3 +50,6 @@ A aplicação permitirá que jogadores:
 
 **Link para screencast no youtube**
 {[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
+
+**Link do deploy**
+{[FutHub](https://futhub-webapp.azurewebsites.net/)}
