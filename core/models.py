@@ -1,82 +1,68 @@
+
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
 
 def gerar_uuid():
+    """Gera um UUID v4; usado como código de acesso para a pelada."""
     return uuid.uuid4()
 
 class Pelada(models.Model):
-    DIAS_DA_SEMANA = [
-        ('0', 'Domingo'),
-        ('1', 'Segunda-feira'),
-        ('2', 'Terça-feira'),
-        ('3', 'Quarta-feira'),
-        ('4', 'Quinta-feira'),
-        ('5', 'Sexta-feira'),
-        ('6', 'Sábado'),
-    ]
-
-    nome = models.CharField(max_length=100)
+    """Representa um jogo de futebol entre amigos."""
+    codigo_acesso = models.UUIDField(default=gerar_uuid, unique=True, editable=False)
+    nome = models.CharField(max_length=120)
     data_inicial = models.DateField()
-    hora = models.TimeField(default='18:00:00')
-    local = models.CharField(max_length=100)
-    organizador = models.ForeignKey(User, on_delete=models.CASCADE)
+    hora = models.TimeField()
+    local = models.CharField(max_length=120)
+    recorrente = models.BooleanField(default=False)
+    organizador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='peladas_criadas')
 
-    recorrente = models.BooleanField(default=False, verbose_name="Pelada semanal?")
-    dia_semana = models.CharField(
-        max_length=1,
-        choices=DIAS_DA_SEMANA,
-        blank=True,
-        null=True,
-        verbose_name="Dia da semana"
-    )
-    semanas_duracao = models.PositiveIntegerField(
-        default=4,
-        validators=[MinValueValidator(1), MaxValueValidator(52)],
-        verbose_name="Número de semanas",
-        blank=True,
-        null=True
-    )
-
-    codigo_acesso = models.UUIDField(default=gerar_uuid, editable=False, unique=True)
+    class Meta:
+        ordering = ['-data_inicial', 'hora']
 
     def __str__(self):
-        recorrencia = " (semanal)" if self.recorrente else ""
-        return f"{self.nome} - {self.data_inicial} {self.hora}{recorrencia}"
+        return f"{self.nome} ({self.data_inicial.strftime('%d/%m/%Y')})"
 
-    def get_data_completa(self):
-        return f"{self.data_inicial} {self.hora}"
-
-    def save(self, *args, **kwargs):
-        if self.recorrente and not self.dia_semana:
-            self.dia_semana = str(self.data_inicial.weekday())
-        if not self.codigo_acesso:
-            self.codigo_acesso = gerar_uuid()
-        super().save(*args, **kwargs)
+    @property
+    def participantes(self):
+        """
+        Retorna um QuerySet de Jogador ligados a esta pelada,
+        incluído o organizador (é criado no momento da pelada).
+        """
+        from .models import Jogador          # import local para evitar ciclos
+        return Jogador.objects.filter(presenca__pelada=self)
 
 class Jogador(models.Model):
     usuario = models.OneToOneField(User, on_delete=models.CASCADE, related_name='jogador')
-    nome = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
+    nome = models.CharField(max_length=150)
+    email = models.EmailField()
     posicao = models.CharField(max_length=50, blank=True)
-    peladas = models.ManyToManyField(Pelada, through='Presenca', related_name='jogadores')
 
     def __str__(self):
         return self.nome
 
 class Presenca(models.Model):
-    jogador = models.ForeignKey(Jogador, on_delete=models.CASCADE)
     pelada = models.ForeignKey(Pelada, on_delete=models.CASCADE)
+    jogador = models.ForeignKey(Jogador, on_delete=models.CASCADE)
     confirmado = models.BooleanField(default=False)
+    criado_em = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ('pelada', 'jogador')
+        ordering = ['pelada', 'jogador']
+
+    def __str__(self):
+        status = '✅' if self.confirmado else '⏳'
+        return f"{self.jogador} em {self.pelada} {status}"
+
+# Cria automaticamente um Jogador assim que o User é criado
 @receiver(post_save, sender=User)
 def criar_jogador_automatico(sender, instance, created, **kwargs):
     if created:
-        Jogador.objects.get_or_create(
+        Jogador.objects.create(
             usuario=instance,
-            email=instance.email,
-            defaults={'nome': instance.username}
+            nome=instance.username,
+            email=instance.email
         )
