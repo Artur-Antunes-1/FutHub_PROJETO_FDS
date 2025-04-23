@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FutHub – {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'core/css/styles.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <header class="header">
+        <h1>FutHub</h1>
+        <div class="user-nav">
+            {% if user.is_authenticated %}
+                <div class="user-menu">
+                    <button class="user-toggle">
+                        👤 {{ user.username }} ▼
+                    </button>
+                    <div class="user-dropdown">
+                        <a href="#">Meu Perfil</a>
+                        <a href="{% url 'logout' %}">Sair</a>
+                    </div>
+                </div>
+            {% else %}
+                <a href="{% url 'login' %}" class="auth-btn login-btn">Entrar</a>
+            {% endif %}
+        </div>
+    </header>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
