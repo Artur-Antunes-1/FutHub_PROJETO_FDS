@@ -19,7 +19,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
-ALLOWED_HOSTS = [h.strip() for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",") if h]
+ALLOWED_HOSTS = [h.strip()
+                 for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+                 if h.strip()] + ["futhub-webapp.azurewebsites.net"]
 
 # Confiança de CSRF (útil para Azure)
 CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if "." in h]
@@ -38,7 +40,6 @@ INSTALLED_APPS = [
 
     # apps do projeto
     "core",
-    "forum.apps.ForumConfig",
 ]
 
 # ---------------------------------------------------------------------------
