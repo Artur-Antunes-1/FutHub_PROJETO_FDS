@@ -1,0 +1,5 @@
+{
+    "git.ignoreLimitWarning": true,
+    "appService.defaultWebAppToDeploy": "/subscriptions/8a14edc2-3849-4e8e-bf1c-4007da39ee30/resourceGroups/futhub-group/providers/Microsoft.Web/sites/futhub-webapp",
+    "appService.deploySubpath": "."
+}
