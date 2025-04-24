@@ -18,7 +18,8 @@ class Pelada(models.Model):
     local = models.CharField(max_length=120)
     recorrente = models.BooleanField(default=False)
     organizador = models.ForeignKey(User, on_delete=models.CASCADE, related_name='peladas_criadas')
-
+    limite_participantes = models.IntegerField(default=20)
+    
     class Meta:
         ordering = ['-data_inicial', 'hora']
 

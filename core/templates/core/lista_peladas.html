@@ -1,6 +1,44 @@
 {% extends "core/base.html" %}
 
 {% block content %}
+
+<style>
+  .pelada-progress {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 10px;
+  }
+
+  .pelada-progress svg {
+    transform: rotate(-90deg);
+  }
+
+  .progress-bg {
+    fill: none;
+    stroke: #eee;
+    stroke-width: 8;
+  }
+
+  .progress-circle {
+    fill: none;
+    stroke: #4CAF50;
+    stroke-width: 8;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.35s;
+  }
+
+  .progress-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-weight: bold;
+    font-size: 16px;
+    color: #333;
+  }
+</style>
+
 <div class="peladas-wrapper">
   <h1 class="text-center">Minhas Peladas</h1>
 
@@ -14,6 +52,18 @@
   <div class="peladas-grid">
     {% for pelada in peladas %}
       <div class="card-pelada">
+        <div class="pelada-progress">
+          <svg width="80" height="80">
+            <circle class="progress-bg" cx="40" cy="40" r="34" />
+            <circle class="progress-circle"
+                    cx="40" cy="40" r="34"
+                    stroke-dasharray="213.6"
+                    stroke-dashoffset="{{ pelada.dashoffset }}"
+            </circle>
+          </svg>
+          <div class="progress-text">{{ pelada.confirmados }}/{{ pelada.limite_participantes }}</div>
+        </div>
+
         {% if user == pelada.organizador %}
           <span class="badge badge-owner">Organizador</span>
         {% elif pelada.id in participante_em %}

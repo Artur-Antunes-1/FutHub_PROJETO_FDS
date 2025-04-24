@@ -6,19 +6,18 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.http import HttpResponseForbidden
 from django.db import IntegrityError
 from uuid import UUID
-from django.db.models import Q
+from django.db.models import Q, Count
 from .models import Pelada, Presenca, Jogador
 from .forms import PeladaForm
+from django.db import models
 
 # Helper para obter ou criar Jogador ativo
-
 def get_or_create_jogador(user):
     jogador, _ = Jogador.objects.get_or_create(
         usuario=user,
         defaults={'nome': user.username, 'email': user.email}
     )
     return jogador
-
 
 def home(request):
     return render(request, 'core/home.html')
@@ -27,15 +26,27 @@ def home(request):
 def lista_peladas(request):
     jogador = get_or_create_jogador(request.user)
 
-    peladas = Pelada.objects.filter(
-        Q(presenca__jogador=jogador) |
-        Q(organizador=request.user)
-    ).distinct()
+    peladas = (
+        Pelada.objects
+        .filter(presenca__jogador=jogador)
+        .distinct()
+        .annotate(confirmados=Count('presenca', filter=Q(presenca__confirmado=True)))
+    )
 
-    participante_em = peladas.values_list('id', flat=True)
+    participante_em = list(
+        Presenca.objects.filter(jogador=jogador).values_list('pelada_id', flat=True)
+    )
+
+    for p in peladas:
+        if p.limite_participantes:
+            porcentagem = (p.confirmados / p.limite_participantes)
+            p.dashoffset = 213.6 - (porcentagem * 213.6)
+        else:
+            p.dashoffset = 213.6
+
     return render(request, 'core/lista_peladas.html', {
         'peladas': peladas,
-        'participante_em': list(participante_em)
+        'participante_em': participante_em,
     })
 
 @login_required
@@ -58,7 +69,7 @@ def detalhes_pelada(request, pk):
     jogador = get_or_create_jogador(request.user)
     pelada  = get_object_or_404(Pelada, pk=pk)
 
-    # só organiza­dor ou quem já está na pelada vê
+    # só organiza­or ou quem já está na pelada vê
     if not (
         pelada.organizador == request.user or
         Presenca.objects.filter(pelada=pelada, jogador=jogador).exists()
@@ -72,6 +83,9 @@ def detalhes_pelada(request, pk):
         .order_by('jogador__nome')
     )
 
+    confirmados = presencas.filter(confirmado=True).count()
+    limite = pelada.limite_participantes
+
     return render(
         request,
         'core/detalhes_pelada.html',
@@ -80,6 +94,8 @@ def detalhes_pelada(request, pk):
             'presencas': presencas,
             'ja_participa': presencas.filter(jogador=jogador).exists(),
             'confirmado': presencas.filter(jogador=jogador, confirmado=True).exists(),
+            'confirmados': confirmados,
+            'limite': limite,
         },
     )
 
@@ -135,7 +151,6 @@ def cancelar_presenca(request, pk):
         messages.success(request, 'Presença cancelada.')
 
     return redirect('detalhes_pelada', pk=pk)
-
 
 @login_required
 def entrar_com_codigo(request):
