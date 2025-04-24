@@ -71,6 +71,8 @@
     <!-- COLUNA PARTICIPANTES ------------------------------------------- -->
     <aside class="lista-participantes">
       <h3>Participantes</h3>
+      <p><strong>Confirmados:</strong> {{ confirmados }} / {{ limite }}</p>
+      
       {% for p in presencas %}
         <div class="participante">
           <span>{{ p.jogador.nome }}</span>

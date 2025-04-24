@@ -71,6 +71,9 @@ def detalhes_pelada(request, pk):
         .select_related('jogador')
         .order_by('jogador__nome')
     )
+    # 👉 AQUI adicionamos a contagem de confirmados
+    confirmados = presencas.filter(confirmado=True).count()
+    limite = pelada.limite_participantes
 
     return render(
         request,
@@ -80,6 +83,8 @@ def detalhes_pelada(request, pk):
             'presencas': presencas,
             'ja_participa': presencas.filter(jogador=jogador).exists(),
             'confirmado': presencas.filter(jogador=jogador, confirmado=True).exists(),
+            'confirmados': confirmados,
+            'limite': limite,
         },
     )
 
