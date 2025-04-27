@@ -11,11 +11,14 @@
         box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         text-align: center;
     }
-
     .codigo-container h2 {
         margin-bottom: 25px;
     }
-
+    .error-message {
+        color: red;
+        margin-bottom: 15px;
+        font-size: 14px;
+    }
     .codigo-container input[type="text"] {
         width: 100%;
         padding: 10px;
@@ -23,8 +26,8 @@
         border-radius: 5px;
         margin-bottom: 15px;
         font-size: 16px;
+        box-sizing: border-box;
     }
-
     .codigo-container button {
         padding: 10px 20px;
         background-color: #3498db;
@@ -34,7 +37,6 @@
         font-size: 16px;
         cursor: pointer;
     }
-
     .codigo-container button:hover {
         background-color: #2980b9;
     }
@@ -44,6 +46,11 @@
 {% block content %}
 <div class="codigo-container">
     <h2>Entrar em uma Pelada</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="error-message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     <form method="post">
         {% csrf_token %}
         <input type="text" name="codigo_acesso" placeholder="Cole o código aqui" required>

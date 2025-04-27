@@ -32,6 +32,11 @@
         font-size: 16px;
         box-sizing: border-box;
     }
+    .error-message {
+        color: red;
+        margin-top: 5px;
+        font-size: 14px;
+    }
     .checkbox-group {
         display: flex;
         align-items: center;
@@ -60,35 +65,39 @@
     <h1>{% if object %}Editar{% else %}Criar{% endif %} Pelada</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.non_field_errors }}
 
         <div class="form-group">
-            {{ form.nome.label_tag }}
-            {{ form.nome }}
-            {{ form.nome.errors }}
+            <label for="id_nome">Nome</label>
+            <input type="text" id="id_nome" name="nome" class="form-control" 
+                   value="{{ values.nome|default_if_none:'' }}" required>
+            {% if errors.nome %}<div class="error-message">{{ errors.nome }}</div>{% endif %}
         </div>
 
         <div class="form-group">
-            {{ form.data_inicial.label_tag }}
-            {{ form.data_inicial }}
-            {{ form.data_inicial.errors }}
+            <label for="id_data_inicial">Data Inicial</label>
+            <input type="date" id="id_data_inicial" name="data_inicial" class="form-control" 
+                   value="{{ values.data_inicial|default_if_none:'' }}" required>
+            {% if errors.data_inicial %}<div class="error-message">{{ errors.data_inicial }}</div>{% endif %}
         </div>
 
         <div class="form-group">
-            {{ form.hora.label_tag }}
-            {{ form.hora }}
-            {{ form.hora.errors }}
+            <label for="id_hora">Hora</label>
+            <input type="time" id="id_hora" name="hora" class="form-control" 
+                   value="{{ values.hora|default_if_none:'' }}" required>
+            {% if errors.hora %}<div class="error-message">{{ errors.hora }}</div>{% endif %}
         </div>
 
         <div class="form-group">
-            {{ form.local.label_tag }}
-            {{ form.local }}
-            {{ form.local.errors }}
+            <label for="id_local">Local</label>
+            <input type="text" id="id_local" name="local" class="form-control" 
+                   value="{{ values.local|default_if_none:'' }}" required>
+            {% if errors.local %}<div class="error-message">{{ errors.local }}</div>{% endif %}
         </div>
 
         <div class="checkbox-group">
-            {{ form.recorrente }}
-            {{ form.recorrente.label_tag }}
+            <input type="checkbox" id="id_recorrente" name="recorrente" 
+                   {% if values.recorrente %}checked{% endif %}> 
+            <label for="id_recorrente">Pelada semanal</label>
         </div>
 
         <button type="submit" class="btn-submit">Salvar Pelada</button>

@@ -27,6 +27,7 @@
         padding: 12px;
         border: 1px solid #ccc;
         border-radius: 4px;
+        box-sizing: border-box;
     }
 
     .btn-submit {
@@ -38,6 +39,7 @@
         border-radius: 4px;
         font-size: 16px;
         cursor: pointer;
+        margin-top: 10px;
     }
 
     .btn-submit:hover {
@@ -48,6 +50,11 @@
         margin-top: 15px;
         text-align: center;
     }
+    .error-message {
+        color: red;
+        margin-bottom: 15px;
+        text-align: center;
+    }
 </style>
 {% endblock %}
 
@@ -56,10 +63,9 @@
     <h2>Login</h2>
     {% if messages %}
         {% for message in messages %}
-            <p class="error">{{ message }}</p>
+            <div class="error-message">{{ message }}</div>
         {% endfor %}
     {% endif %}
-
     <form method="post">
         {% csrf_token %}
         <div class="form-group">
@@ -70,7 +76,6 @@
         </div>
         <button type="submit" class="btn-submit">Entrar</button>
     </form>
-
     <p class="register-link">
         Não tem conta? <a href="{% url 'register' %}">Cadastre-se</a>
     </p>
