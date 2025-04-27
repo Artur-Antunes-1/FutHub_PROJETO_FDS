@@ -23,21 +23,28 @@ def home(request):
 @login_required
 def lista_peladas(request):
     jogador = get_or_create_jogador(request.user)
+
     peladas = (
         Pelada.objects
-        .filter(presenca__jogador=jogador)
-        .distinct()
-        .annotate(confirmados=Count('presenca', filter=Q(presenca__confirmado=True)))
+        .annotate(
+            user_participa=Count('presenca', filter=Q(presenca__jogador=jogador)),
+            confirmados=Count('presenca',  filter=Q(presenca__confirmado=True))
+        )
+        .filter(user_participa__gt=0)
     )
+
     participante_em = list(
-        Presenca.objects.filter(jogador=jogador).values_list('pelada_id', flat=True)
+        Presenca.objects.filter(jogador=jogador)
+                        .values_list('pelada_id', flat=True)
     )
+
     for p in peladas:
         if p.limite_participantes:
             porcentagem = p.confirmados / p.limite_participantes
             p.dashoffset = 213.6 - (porcentagem * 213.6)
         else:
             p.dashoffset = 213.6
+
     return render(request, 'core/lista_peladas.html', {
         'peladas': peladas,
         'participante_em': participante_em,
