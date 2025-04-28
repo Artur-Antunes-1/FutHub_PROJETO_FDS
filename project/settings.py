@@ -19,7 +19,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
 # DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
-DEBUG = True
+# DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
@@ -27,7 +28,7 @@ ALLOWED_HOSTS = [
     "169.254.131.2",        # para o probe sem porta
     "169.254.131.2:8000",   # para o probe COM porta
     # opcionalmente, em teste:
-    "*"                     # libera qualquer host (remova depois!)
+    # "*"                     # libera qualquer host (remova depois!)
 ]
 
 # Confiança de CSRF (útil para Azure)
