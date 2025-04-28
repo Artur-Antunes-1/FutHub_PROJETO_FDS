@@ -24,7 +24,10 @@ ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
     "futhub-webapp.azurewebsites.net",
-    "169.254.131.2",      # adicionado para o probe interno do Kudu
+    "169.254.131.2",        # para o probe sem porta
+    "169.254.131.2:8000",   # para o probe COM porta
+    # opcionalmente, em teste:
+    "*"                     # libera qualquer host (remova depois!)
 ]
 
 # Confiança de CSRF (útil para Azure)
