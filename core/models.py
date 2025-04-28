@@ -48,6 +48,11 @@ class Presenca(models.Model):
     pelada = models.ForeignKey(Pelada, on_delete=models.CASCADE)
     jogador = models.ForeignKey(Jogador, on_delete=models.CASCADE)
     confirmado = models.BooleanField(default=False)
+    nivel_habilidade = models.IntegerField(
+        default=3,
+        choices=[(i, f"{i} estrela{'s' if i>1 else ''}") for i in range(1,6)],
+        verbose_name='Nível de Habilidade'
+    )
     criado_em = models.DateTimeField(auto_now_add=True)
 
     class Meta:

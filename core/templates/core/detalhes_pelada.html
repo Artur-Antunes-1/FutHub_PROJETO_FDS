@@ -1,89 +1,105 @@
 {% extends "core/base.html" %}
 
 {% block extra_css %}
-<!-- estilos locais que não dependem do placeholder -->
+<style>
+  /* estilos para exibição de estrelas */
+  .stars { margin-left: 10px; }
+  .star { font-size: 1.2em; color: #ccc; }
+  .star.filled { color: gold; }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="pelada-card">
 
-    <!-- COLUNA INFO ----------------------------------------------------- -->
-    <section>
-      <h1 class="pelada-titulo">{{ pelada.nome }}</h1>
-      {% if pelada.recorrente %}
-        <span class="pelada-badge">🔁 Pelada Semanal</span>
-      {% endif %}
-  
-      <div class="info-grid">
-  
-        <div class="info-box">
-          <h4>📅 Data & Horário</h4>
-          <p>{{ pelada.data_inicial|date:"d/m/Y" }} às {{ pelada.hora|time:"H:i" }}</p>
-          {% if pelada.recorrente %}<p>Repetição semanal</p>{% endif %}
-        </div>
-  
-        <div class="info-box">
-          <h4>📍 Local</h4>
-          <p>{{ pelada.local }}</p>
-        </div>
-  
-        <div class="info-box">
-          <h4>👤 Organizador</h4>
-          <p>{{ pelada.organizador.username }}</p>
-        </div>
-  
-        <div class="info-box">
-          <h4>🔐 Código de Acesso</h4>
-          <p style="word-break:break-all;">{{ pelada.codigo_acesso }}</p>
-        </div>
-  
+  <!-- COLUNA INFO ----------------------------------------------------- -->
+  <section>
+    <h1 class="pelada-titulo">{{ pelada.nome }}</h1>
+    {% if pelada.recorrente %}
+      <span class="pelada-badge">🔁 Pelada Semanal</span>
+    {% endif %}
+
+    <div class="info-grid">
+
+      <div class="info-box">
+        <h4>📅 Data & Horário</h4>
+        <p>{{ pelada.data_inicial|date:"d/m/Y" }} às {{ pelada.hora|time:"H:i" }}</p>
+        {% if pelada.recorrente %}<p>Repetição semanal</p>{% endif %}
       </div>
-  
-      <!-- BOTÕES -------------------------------------------------------- -->
-      <div class="action-row">
-        {% if ja_participa %}
-          {% if confirmado %}
-            <form method="post" action="{% url 'cancelar_presenca' pelada.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-delete">❌ Cancelar Presença</button>
-            </form>
-          {% else %}
-            <form method="post" action="{% url 'confirmar_presenca' pelada.id %}">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-success">✅ Confirmar Presença</button>
-            </form>
-          {% endif %}
-        {% endif %}
-  
-        <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
-  
-        {% if user == pelada.organizador or user.is_superuser %}
-          <a href="{% url 'editar_pelada' pelada.id %}" class="btn btn-edit">✏️ Editar</a>
-          <form method="post" action="{% url 'deletar_pelada' pelada.id %}">
+
+      <div class="info-box">
+        <h4>📍 Local</h4>
+        <p>{{ pelada.local }}</p>
+      </div>
+
+      <div class="info-box">
+        <h4>👤 Organizador</h4>
+        <p>{{ pelada.organizador.username }}</p>
+      </div>
+
+      <div class="info-box">
+        <h4>🔐 Código de Acesso</h4>
+        <p style="word-break: break-all;">{{ pelada.codigo_acesso }}</p>
+      </div>
+
+    </div>
+
+    <!-- BOTÕES -------------------------------------------------------- -->
+    <div class="action-row">
+      {% if ja_participa %}
+        {% if confirmado %}
+          <form method="post" action="{% url 'cancelar_presenca' pelada.id %}">
             {% csrf_token %}
-            <button type="submit" class="btn btn-delete"
-                    onclick="return confirm('Excluir esta pelada?')">🗑️ Excluir</button>
+            <button type="submit" class="btn btn-delete">❌ Cancelar Presença</button>
+          </form>
+        {% else %}
+          <form method="post" action="{% url 'confirmar_presenca' pelada.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-success">✅ Confirmar Presença</button>
           </form>
         {% endif %}
+      {% endif %}
+      {% if user == pelada.organizador %}
+        <a href="{% url 'gerenciar_pelada' pelada.id %}" class="btn btn-manage">⚙️ Gerenciar</a>
+      {% endif %}
+      <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
+
+      {% if user == pelada.organizador or user.is_superuser %}
+        <a href="{% url 'editar_pelada' pelada.id %}" class="btn btn-edit">✏️ Editar</a>
+        <form method="post" action="{% url 'deletar_pelada' pelada.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-delete" onclick="return confirm('Excluir esta pelada?')">
+            🗑️ Excluir
+          </button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+
+  <!-- COLUNA PARTICIPANTES ------------------------------------------- -->
+  <aside class="lista-participantes">
+    <h3>Participantes</h3>
+    <p style="text-align: center; font-weight: bold; margin-bottom: 10px;">
+      Confirmados: {{ confirmados }} / {{ limite }}
+    </p>
+    {% for p in presencas %}
+      <div class="participante">
+        <span>{{ p.jogador.nome }}</span>
+        <span class="stars">
+          {% for i in max_estrelas %}
+            {% if forloop.counter0 < p.nivel_habilidade %}
+              <span class="star filled">★</span>
+            {% else %}
+              <span class="star">☆</span>
+            {% endif %}
+          {% endfor %}
+        </span>
+        {% if p.confirmado %}<span class="check">✔</span>{% endif %}
       </div>
-    </section>
-  
-    <!-- COLUNA PARTICIPANTES ------------------------------------------- -->
-    <aside class="lista-participantes">
-      <h3>Participantes</h3>
-      <p style="text-align: center; font-weight: bold; margin-bottom: 10px;">
-        Confirmados: {{ confirmados }} / {{ limite }}
-      </p>
-      {% for p in presencas %}
-        <div class="participante">
-          <span>{{ p.jogador.nome }}</span>
-          {% if p.confirmado %}<span class="check">✔</span>{% endif %}
-        </div>
-      {% empty %}
-        <p style="padding:16px; text-align:center;">Nenhum participante</p>
-      {% endfor %}
-    </aside>
-  
-  </div>
-  
+    {% empty %}
+      <p style="padding: 16px; text-align: center;">Nenhum participante</p>
+    {% endfor %}
+  </aside>
+
+</div>
 {% endblock %}

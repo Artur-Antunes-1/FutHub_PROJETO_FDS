@@ -7,6 +7,7 @@ from django.http import HttpResponseForbidden
 from uuid import UUID
 from django.db.models import Q, Count
 from .models import Pelada, Presenca, Jogador
+from django.views.decorators.http import require_http_methods
 
 # Helper para obter ou criar Jogador ativo
 def get_or_create_jogador(user):
@@ -75,6 +76,35 @@ def detalhes_pelada(request, pk):
         'confirmado': presencas.filter(jogador=jogador, confirmado=True).exists(),
         'confirmados': confirmados,
         'limite': limite,
+        'max_estrelas': range(5),  # para mostrar estrelas
+    })
+
+@login_required
+@require_http_methods(["GET", "POST"])
+def gerenciar_pelada(request, pk):
+    pelada = get_object_or_404(Pelada, pk=pk, organizador=request.user)
+    presencas = Presenca.objects.filter(pelada=pelada).select_related('jogador')
+    if request.method == 'POST':
+        # remoção de jogador
+        if 'remover' in request.POST:
+            pid = request.POST.get('remover')
+            pres = get_object_or_404(Presenca, id=pid, pelada=pelada)
+            pres.delete()
+            messages.success(request, 'Jogador removido com sucesso.')
+            return redirect('gerenciar_pelada', pk=pk)
+        # atualização de níveis
+        if 'salvar_niveis' in request.POST:
+            for pres in presencas:
+                nivel = request.POST.get(f'nivel_{pres.id}')
+                if nivel and nivel.isdigit():
+                    pres.nivel_habilidade = int(nivel)
+                    pres.save(update_fields=['nivel_habilidade'])
+            messages.success(request, 'Níveis de habilidade atualizados.')
+            return redirect('gerenciar_pelada', pk=pk)
+    return render(request, 'core/gerenciar_pelada.html', {
+        'pelada': pelada,
+        'presencas': presencas,
+        'niveis': range(1,6),
     })
 
 @login_required

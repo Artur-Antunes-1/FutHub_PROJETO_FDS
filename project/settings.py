@@ -18,7 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Segurança                                                                   
 # ---------------------------------------------------------------------------
 SECRET_KEY = os.getenv("SECRET_KEY", get_random_secret_key())
-DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
+# DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
+DEBUG = True
 ALLOWED_HOSTS = [h.strip()
                  for h in os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
                  if h.strip()] + ["futhub-webapp.azurewebsites.net"]

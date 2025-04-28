@@ -16,7 +16,8 @@ urlpatterns = [
     path('peladas/<int:pk>/', views.detalhes_pelada, name='detalhes_pelada'),
     path('peladas/<int:pk>/editar/', views.editar_pelada, name='editar_pelada'),
     path('peladas/<int:pk>/deletar/', views.deletar_pelada, name='deletar_pelada'),
-     path('peladas/<int:pk>/presenca/',  views.confirmar_presenca, name='confirmar_presenca'),
+    path('peladas/<int:pk>/presenca/',  views.confirmar_presenca, name='confirmar_presenca'),
     path('peladas/<int:pk>/cancelar/',  views.cancelar_presenca,   name='cancelar_presenca'),
+    path('peladas/<int:pk>/gerenciar/', views.gerenciar_pelada,    name='gerenciar_pelada'),
     path('peladas/entrar-com-codigo/', views.entrar_com_codigo, name='entrar_com_codigo'),
 ]

@@ -1,0 +1,52 @@
+{% extends "core/base.html" %}
+
+{% block extra_css %}
+<style>
+    .manage-container { max-width: 800px; margin: 40px auto; padding: 20px; background: white; border-radius:8px; }
+    table { width:100%; border-collapse: collapse; margin-bottom:20px; }
+    th, td { padding:12px; border:1px solid #ddd; text-align:left; }
+    .btn { padding:6px 12px; border:none; border-radius:4px; cursor:pointer; }
+    .btn-back { background:#888; color:white; margin-bottom:10px; display:inline-block; text-decoration:none; padding:6px 12px; border-radius:4px; }
+    .btn-save { background:#4CAF50; color:white; }
+    .btn-remove { background:#e74c3c; color:white; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="manage-container">
+    <h1>Gerenciar Pelada: {{ pelada.nome }}</h1>
+    <!-- Botão de voltar para detalhes -->
+    <a href="{% url 'detalhes_pelada' pelada.id %}" class="btn-back">← Voltar</a>
+
+    <form method="post">
+        {% csrf_token %}
+        <table>
+            <thead>
+                <tr><th>Jogador</th><th>Nível</th><th>Ações</th></tr>
+            </thead>
+            <tbody>
+                {% for pres in presencas %}
+                    <tr>
+                        <td>{{ pres.jogador.nome }}</td>
+                        <td>
+                            <select name="nivel_{{ pres.id }}">
+                                {% for n in niveis %}
+                                    <option value="{{ n }}" {% if pres.nivel_habilidade == n %}selected{% endif %}>
+                                        {{ n }} estrela{% if n > 1 %}s{% endif %}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <button type="submit" name="remover" value="{{ pres.id }}" class="btn btn-remove">
+                                Remover
+                            </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" name="salvar_niveis" class="btn btn-save">Salvar Níveis</button>
+    </form>
+</div>
+{% endblock %}
