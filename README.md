@@ -30,9 +30,9 @@ A aplicação permitirá que jogadores:
 {https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1} 
 
 **Prints do jira**
-![print jira 01](novo_print_backlog_jira.jpg)
-![print jira 02](novo_print_quadro_jira.jpg)
-![print jira 03](print_exemplo_historia_jira.jpg)
+![print jira 01](img_entregas/novo_print_backlog_jira.jpg)
+![print jira 02](img_entregas/novo_print_quadro_jira.jpg)
+![print jira 03](img_entregas/print_exemplo_historia_jira.jpg)
 
 **Link para protótipo do figma**
 {https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
@@ -44,9 +44,9 @@ A aplicação permitirá que jogadores:
 ## Segunda Entrega
 
 **Prints do jira**
-![print jira 01](printbacklog_entrega2.jpg)
-![print jira 02](printquadro_entrega2.jpg)
-![print jira 03](bugtracker_entrega2.jpg)
+![print jira 01](img_entregas/printbacklog_entrega2.jpg)
+![print jira 02](img_entregas/printquadro_entrega2.jpg)
+![print jira 03](img_entregas/bugtracker_entrega2.jpg)
 
 **Link para screencast no youtube**
 {[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
