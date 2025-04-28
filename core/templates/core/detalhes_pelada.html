@@ -63,6 +63,13 @@
         <a href="{% url 'gerenciar_pelada' pelada.id %}" class="btn btn-manage">⚙️ Gerenciar</a>
       {% endif %}
       <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
+      
+      {% if user == pelada.organizador and confirmados == 20 %}
+        <a href="{% url 'sortear_times' pelada.id %}" 
+          style="background-color:#6c63ff; color:white; padding:10px 20px; margin-top:10px; border-radius:8px; font-weight:bold; text-decoration:none; display:inline-block;">
+          🎲 Sortear Times
+        </a>
+      {% endif %}
 
       {% if user == pelada.organizador or user.is_superuser %}
         <a href="{% url 'editar_pelada' pelada.id %}" class="btn btn-edit">✏️ Editar</a>

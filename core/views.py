@@ -280,3 +280,58 @@ def register_view(request):
 def logout_view(request):
     auth_logout(request)
     return redirect('home')
+
+import random
+
+# Sortear times de forma justa
+
+import itertools
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+
+PATTERN     = (0, 1, 2, 3, 3, 2, 1, 0)   # 8 passos
+PATTERN_CYC = itertools.cycle(PATTERN)    # gera infinitamente
+
+@login_required
+def sortear_times(request, pk):
+    pelada = get_object_or_404(Pelada, pk=pk)
+
+    if request.user != pelada.organizador:
+        return HttpResponseForbidden('Apenas o organizador pode sortear times.')
+
+    confirmados = list(
+        Presenca.objects
+        .filter(pelada=pelada, confirmado=True)
+        .select_related('jogador')
+        .order_by('-nivel_habilidade')
+    )
+
+    if len(confirmados) != pelada.limite_participantes:          # 20
+        messages.error(request, 'É necessário ter exatamente 20 confirmados.')
+        return redirect('detalhes_pelada', pk=pelada.pk)
+
+    # inicia 4 times vazios
+    times = [
+        {'nome': 'Time 1', 'jogadores': [], 'total_estrelas': 0},
+        {'nome': 'Time 2', 'jogadores': [], 'total_estrelas': 0},
+        {'nome': 'Time 3', 'jogadores': [], 'total_estrelas': 0},
+        {'nome': 'Time 4', 'jogadores': [], 'total_estrelas': 0},
+    ]
+
+    # distribui seguindo o padrão serpente de 8 posições
+    for jogador, slot in zip(confirmados, PATTERN_CYC):
+        times[slot]['jogadores'].append(jogador)
+        times[slot]['total_estrelas'] += jogador.nivel_habilidade
+        if sum(len(t['jogadores']) for t in times) == 20:
+            break  # já colocamos todos os 20
+
+    # cada time precisa agora ter 5 jogadores
+    for t in times:
+        t['vagas'] = 5 - len(t['jogadores'])      # deve ser sempre 0, mas segura para teste
+
+    return render(request, 'core/sorteio_times.html', {
+        'pelada': pelada,
+        'times': times,
+    })

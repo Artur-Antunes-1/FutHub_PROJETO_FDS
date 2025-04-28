@@ -1,0 +1,39 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+<div class="pelada-card">
+
+  {% for time in times %}
+    <h2 class="text-center" style="margin-top: 1.5rem;">{{ time.nome }}</h2>
+
+    <ul style="list-style: none; padding: 0; text-align: center; margin-bottom: 1rem;">
+      {# 1) Jogadores confirmados #}
+      {% for presenca in time.jogadores %}
+        <li style="margin: 0.25rem 0;">
+          {{ presenca.jogador.nome }} –
+          {% for _ in "★★★★★"|slice:":presenca.nivel_habilidade" %}⭐️{% endfor %}
+          ({{ presenca.nivel_habilidade }}⭐️)
+        </li>
+      {% endfor %}
+
+      {# 2) Preenche até chegar a 5 linhas com “Vaga livre” #}
+      {% for _ in "12345"|slice:":time.vagas" %}
+        <li style="margin: 0.25rem 0; color: #bbb;">
+          — Vaga livre —
+        </li>
+      {% endfor %}
+    </ul>
+
+    <p style="text-align: center; font-weight: bold; margin-bottom: 2rem;">
+      Total de estrelas: {{ time.total_estrelas }}
+    </p>
+  {% endfor %}
+
+  <div class="action-row" style="text-align: center; margin-top: 2rem;">
+    <a href="{% url 'detalhes_pelada' pelada.id %}" class="btn btn-back">
+      ← Voltar para Pelada
+    </a>
+  </div>
+
+</div>
+{% endblock %}
