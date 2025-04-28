@@ -31,6 +31,23 @@ ALLOWED_HOSTS = [
 CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if "." in h]
 
 # ---------------------------------------------------------------------------
+# Banco de dados (SQLite em dev, persistente no Azure em produção)
+# ---------------------------------------------------------------------------
+if os.getenv("WEBSITE_INSTANCE_ID"):
+    # em Azure App Service, HOME aponta para /home
+    SQLITE_PATH = Path(os.environ["HOME"]) / "site" / "wwwroot" / "db.sqlite3"
+else:
+    # no seu ambiente local
+    SQLITE_PATH = BASE_DIR / "db.sqlite3"
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": SQLITE_PATH,
+    }
+}
+
+# ---------------------------------------------------------------------------
 # Aplicações                                                                  
 # ---------------------------------------------------------------------------
 INSTALLED_APPS = [
@@ -79,16 +96,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "project.wsgi.application"
-
-# ---------------------------------------------------------------------------
-# Banco de dados (SQLite por padrão)                                          
-# ---------------------------------------------------------------------------
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
-}
 
 # ---------------------------------------------------------------------------
 # Autenticação                                                                
