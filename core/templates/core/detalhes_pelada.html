@@ -15,6 +15,17 @@
   <!-- COLUNA INFO ----------------------------------------------------- -->
   <section>
     <h1 class="pelada-titulo">{{ pelada.nome }}</h1>
+
+    {% if messages %}
+     <div style="grid-column:1/-1; margin:16px 0;">
+       {% for msg in messages %}
+         <div class="error-message" style="background:#fde8e8; padding:10px; border-radius:4px;">
+           {{ msg }}
+         </div>
+       {% endfor %}
+     </div>
+   {% endif %}
+
     {% if pelada.recorrente %}
       <span class="pelada-badge">🔁 Pelada Semanal</span>
     {% endif %}
@@ -44,42 +55,40 @@
 
     </div>
 
-    <!-- BOTÕES -------------------------------------------------------- -->
-    <div class="action-row">
+     <!-- BOTÕES -------------------------------------------------------- -->
+     <div class="action-row">
       {% if ja_participa %}
         {% if confirmado %}
-          <form method="post" action="{% url 'cancelar_presenca' pelada.id %}">
+          <form method="post" action="{% url 'cancelar_presenca' pelada.id %}" style="display:inline-block; margin-right:8px;">
             {% csrf_token %}
             <button type="submit" class="btn btn-delete">❌ Cancelar Presença</button>
           </form>
         {% else %}
-          <form method="post" action="{% url 'confirmar_presenca' pelada.id %}">
+          <form method="post" action="{% url 'confirmar_presenca' pelada.id %}" style="display:inline-block; margin-right:8px;">
             {% csrf_token %}
             <button type="submit" class="btn btn-success">✅ Confirmar Presença</button>
           </form>
         {% endif %}
       {% endif %}
+
       {% if user == pelada.organizador %}
+        <a href="{% url 'sortear_times' pelada.id %}" class="btn btn-manage" style="background-color:#6c63ff; color:#fff;">🎲 Sortear Times</a>
         <a href="{% url 'gerenciar_pelada' pelada.id %}" class="btn btn-manage">⚙️ Gerenciar</a>
-      {% endif %}
-      <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
-      
-      {% if user == pelada.organizador and confirmados == 20 %}
-        <a href="{% url 'sortear_times' pelada.id %}" 
-          style="background-color:#6c63ff; color:white; padding:10px 20px; margin-top:10px; border-radius:8px; font-weight:bold; text-decoration:none; display:inline-block;">
-          🎲 Sortear Times
-        </a>
       {% endif %}
 
       {% if user == pelada.organizador or user.is_superuser %}
         <a href="{% url 'editar_pelada' pelada.id %}" class="btn btn-edit">✏️ Editar</a>
-        <form method="post" action="{% url 'deletar_pelada' pelada.id %}">
+        <form method="post" action="{% url 'deletar_pelada' pelada.id %}" style="display:inline-block; margin-left:8px;" onsubmit="return confirm('Excluir esta pelada?');">
           {% csrf_token %}
-          <button type="submit" class="btn btn-delete" onclick="return confirm('Excluir esta pelada?')">
-            🗑️ Excluir
-          </button>
+          <button type="submit" class="btn btn-delete">🗑️ Excluir</button>
         </form>
       {% endif %}
+
+      {% if user == pelada.organizador and has_sorteio %}  {# pseudocode, veja abaixo #}
+        <a href="{% url 'ver_sorteio' pelada.id %}" class="btn btn-primary">👀 Ver Sorteio</a>
+      {% endif %}
+
+      <a href="{% url 'lista_peladas' %}" class="btn btn-back">← Voltar</a>
     </div>
   </section>
 

@@ -8,6 +8,8 @@ from uuid import UUID
 from django.db.models import Q, Count
 from .models import Pelada, Presenca, Jogador
 from django.views.decorators.http import require_http_methods
+import itertools
+import random
 
 # Helper para obter ou criar Jogador ativo
 def get_or_create_jogador(user):
@@ -61,14 +63,14 @@ def detalhes_pelada(request, pk):
         Presenca.objects.filter(pelada=pelada, jogador=jogador).exists()
     ):
         return HttpResponseForbidden()
-    presencas = (
-        Presenca.objects
-        .filter(pelada=pelada)
-        .select_related('jogador')
-        .order_by('jogador__nome')
-    )
+
+    presencas = Presenca.objects.filter(pelada=pelada).select_related('jogador').order_by('jogador__nome')
     confirmados = presencas.filter(confirmado=True).count()
     limite = pelada.limite_participantes
+
+    # Verifica se há sorteio salvo na sessão
+    has_sorteio = f'sorteio_{pelada.pk}' in request.session
+
     return render(request, 'core/detalhes_pelada.html', {
         'pelada': pelada,
         'presencas': presencas,
@@ -77,6 +79,7 @@ def detalhes_pelada(request, pk):
         'confirmados': confirmados,
         'limite': limite,
         'max_estrelas': range(5),  # para mostrar estrelas
+        'has_sorteio': has_sorteio,  # flag para botão "Ver Sorteio"
     })
 
 @login_required
@@ -108,6 +111,7 @@ def gerenciar_pelada(request, pk):
     })
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def criar_pelada(request):
     jogador = get_or_create_jogador(request.user)
     if request.method == 'POST':
@@ -116,6 +120,7 @@ def criar_pelada(request):
         hora = request.POST.get('hora')
         local = request.POST.get('local', '').strip()
         recorrente = request.POST.get('recorrente') == 'on'
+        limite = request.POST.get('limite_participantes')
         errors = {}
         if not nome:
             errors['nome'] = 'Este campo é obrigatório.'
@@ -125,10 +130,19 @@ def criar_pelada(request):
             errors['hora'] = 'Este campo é obrigatório.'
         if not local:
             errors['local'] = 'Este campo é obrigatório.'
+        if not limite or not limite.isdigit() or int(limite) < 1:
+            errors['limite_participantes'] = 'Informe um número válido.'
         if errors:
             return render(request, 'core/pelada_form.html', {
                 'errors': errors,
-                'values': {'nome': nome, 'data_inicial': data_inicial, 'hora': hora, 'local': local, 'recorrente': recorrente}
+                'values': {
+                    'nome': nome,
+                    'data_inicial': data_inicial,
+                    'hora': hora,
+                    'local': local,
+                    'recorrente': recorrente,
+                    'limite_participantes': limite,
+                }
             })
         pelada = Pelada.objects.create(
             nome=nome,
@@ -136,6 +150,7 @@ def criar_pelada(request):
             hora=hora,
             local=local,
             recorrente=recorrente,
+            limite_participantes=int(limite),
             organizador=request.user
         )
         Presenca.objects.create(pelada=pelada, jogador=jogador, confirmado=False)
@@ -143,6 +158,7 @@ def criar_pelada(request):
     return render(request, 'core/pelada_form.html', {'values': {}})
 
 @login_required
+@require_http_methods(["GET", "POST"])
 def editar_pelada(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk, organizador=request.user)
     if request.method == 'POST':
@@ -151,6 +167,7 @@ def editar_pelada(request, pk):
         hora = request.POST.get('hora')
         local = request.POST.get('local', '').strip()
         recorrente = request.POST.get('recorrente') == 'on'
+        limite = request.POST.get('limite_participantes')
         errors = {}
         if not nome:
             errors['nome'] = 'Este campo é obrigatório.'
@@ -160,10 +177,19 @@ def editar_pelada(request, pk):
             errors['hora'] = 'Este campo é obrigatório.'
         if not local:
             errors['local'] = 'Este campo é obrigatório.'
+        if not limite or not limite.isdigit() or int(limite) < 1:
+            errors['limite_participantes'] = 'Informe um número válido.'
         if errors:
             return render(request, 'core/pelada_form.html', {
                 'errors': errors,
-                'values': {'nome': nome, 'data_inicial': data_inicial, 'hora': hora, 'local': local, 'recorrente': recorrente},
+                'values': {
+                    'nome': nome,
+                    'data_inicial': data_inicial,
+                    'hora': hora,
+                    'local': local,
+                    'recorrente': recorrente,
+                    'limite_participantes': limite,
+                },
                 'object': pelada
             })
         pelada.nome = nome
@@ -171,12 +197,22 @@ def editar_pelada(request, pk):
         pelada.hora = hora
         pelada.local = local
         pelada.recorrente = recorrente
+        pelada.limite_participantes = int(limite)
         pelada.save()
         return redirect('detalhes_pelada', pk=pk)
     return render(request, 'core/pelada_form.html', {
-        'values': {'nome': pelada.nome, 'data_inicial': pelada.data_inicial, 'hora': pelada.hora, 'local': pelada.local, 'recorrente': pelada.recorrente},
+        'values': {
+            'nome': pelada.nome,
+            'data_inicial': pelada.data_inicial,
+            'hora': pelada.hora,
+            'local': pelada.local,
+            'recorrente': pelada.recorrente,
+            'limite_participantes': pelada.limite_participantes,
+        },
         'object': pelada
     })
+
+
 
 @login_required
 def deletar_pelada(request, pk):
@@ -281,57 +317,84 @@ def logout_view(request):
     auth_logout(request)
     return redirect('home')
 
-import random
-
-# Sortear times de forma justa
-
-import itertools
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseForbidden
-
-PATTERN     = (0, 1, 2, 3, 3, 2, 1, 0)   # 8 passos
-PATTERN_CYC = itertools.cycle(PATTERN)    # gera infinitamente
-
 @login_required
 def sortear_times(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-
     if request.user != pelada.organizador:
-        return HttpResponseForbidden('Apenas o organizador pode sortear times.')
+        return HttpResponseForbidden()
 
-    confirmados = list(
-        Presenca.objects
-        .filter(pelada=pelada, confirmado=True)
-        .select_related('jogador')
-        .order_by('-nivel_habilidade')
-    )
+    confirmados = list(Presenca.objects.filter(pelada=pelada, confirmado=True).select_related('jogador'))
+    limite = pelada.limite_participantes
+    if len(confirmados) != limite:
+        messages.error(request, f'É necessário ter exatamente {limite} confirmados.')
+        return redirect('detalhes_pelada', pk=pk)
 
-    if len(confirmados) != pelada.limite_participantes:          # 20
-        messages.error(request, 'É necessário ter exatamente 20 confirmados.')
-        return redirect('detalhes_pelada', pk=pelada.pk)
+    random.shuffle(confirmados)
+    confirmados.sort(key=lambda p: p.nivel_habilidade, reverse=True)
 
-    # inicia 4 times vazios
-    times = [
-        {'nome': 'Time 1', 'jogadores': [], 'total_estrelas': 0},
-        {'nome': 'Time 2', 'jogadores': [], 'total_estrelas': 0},
-        {'nome': 'Time 3', 'jogadores': [], 'total_estrelas': 0},
-        {'nome': 'Time 4', 'jogadores': [], 'total_estrelas': 0},
-    ]
+    teams_count = 4
+    pattern = list(range(teams_count)) + list(range(teams_count-1, -1, -1))
+    pat_cycle = itertools.cycle(pattern)
 
-    # distribui seguindo o padrão serpente de 8 posições
-    for jogador, slot in zip(confirmados, PATTERN_CYC):
+    times = []
+    for i in range(teams_count):
+        times.append({'nome': f'Time {i+1}', 'jogadores': [], 'total_estrelas': 0, 'vagas': 0})
+
+    for jogador, slot in zip(confirmados, pat_cycle):
         times[slot]['jogadores'].append(jogador)
         times[slot]['total_estrelas'] += jogador.nivel_habilidade
-        if sum(len(t['jogadores']) for t in times) == 20:
-            break  # já colocamos todos os 20
+        if sum(len(t['jogadores']) for t in times) == limite:
+            break
 
-    # cada time precisa agora ter 5 jogadores
     for t in times:
-        t['vagas'] = 5 - len(t['jogadores'])      # deve ser sempre 0, mas segura para teste
+        vagas = max(0, limite//teams_count - len(t['jogadores']))
+        t['vagas'] = vagas
+
+    # **Salva em sessão** para “ver depois”
+    request.session[f'sorteio_{pelada.pk}'] = [
+        {
+            'nome': t['nome'],
+            'jogadores': [
+                {'nome': p.jogador.nome, 'nivel': p.nivel_habilidade}
+                for p in t['jogadores']
+            ],
+            'total_estrelas': t['total_estrelas'],
+            'vagas': t['vagas'],
+        } for t in times
+    ]
+
+    messages.success(request, 'Times sorteados com sucesso!')
+    return render(request, 'core/sorteio_times.html', {
+        'pelada': pelada,
+        'times': times,
+        'max_estrelas': range(5),
+    })
+
+@login_required
+def ver_sorteio(request, pk):
+    pelada = get_object_or_404(Pelada, pk=pk)
+    if request.user != pelada.organizador:
+        return HttpResponseForbidden()
+
+    data = request.session.get(f'sorteio_{pk}')
+    if not data:
+        messages.error(request, 'Nenhum sorteio realizado ainda.')
+        return redirect('detalhes_pelada', pk=pk)
+
+    # Reconstrói objetos simples para template
+    times = []
+    for t in data:
+        jogadores = [type('P',(object,),{'jogador':type('J',(object,),{'nome':j['nome']}),'nivel_habilidade':j['nivel']})()
+                     for j in t['jogadores']]
+        times.append({
+            'nome': t['nome'],
+            'jogadores': jogadores,
+            'total_estrelas': t['total_estrelas'],
+            'vagas_iter': range(t['vagas']),
+        })
 
     return render(request, 'core/sorteio_times.html', {
         'pelada': pelada,
         'times': times,
+        'max_estrelas': range(5),
     })
