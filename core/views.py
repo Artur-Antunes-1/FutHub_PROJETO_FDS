@@ -190,10 +190,27 @@ def deletar_pelada(request, pk):
 def confirmar_presenca(request, pk):
     jogador = get_or_create_jogador(request.user)
     pelada = get_object_or_404(Pelada, pk=pk)
+
+    # Verifica se o jogador já está registrado na pelada
     if not Presenca.objects.filter(pelada=pelada, jogador=jogador).exists():
         messages.error(request, 'Entre na pelada com o código antes de confirmar presença.')
         return redirect('detalhes_pelada', pk=pk)
-    Presenca.objects.update_or_create(pelada=pelada, jogador=jogador, defaults={'confirmado': True})
+
+    # Conta quantos já confirmaram presença
+    confirmados = Presenca.objects.filter(pelada=pelada, confirmado=True).count()
+
+    # Verifica se o limite foi atingido
+    if confirmados >= pelada.limite_participantes:
+        messages.error(request, 'O limite de participantes foi atingido. Não é possível confirmar presença.')
+        return redirect('detalhes_pelada', pk=pk)
+
+    # Se tudo ok, confirma a presença
+    Presenca.objects.update_or_create(
+        pelada=pelada,
+        jogador=jogador,
+        defaults={'confirmado': True}
+    )
+
     messages.success(request, 'Presença confirmada!')
     return redirect('detalhes_pelada', pk=pk)
 
