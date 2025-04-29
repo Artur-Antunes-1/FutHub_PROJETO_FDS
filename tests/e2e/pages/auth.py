@@ -1,12 +1,18 @@
-class LoginPage:
+class AuthPage:
     def __init__(self, page, base):
-        self.page = page
-        self.url  = f"{base}/accounts/login/"
+        self.p  = page
+        self.url_reg = f"{base}/accounts/register/"
+        self.url_log = f"{base}/accounts/login/"
 
-    async def goto(self):
-        await self.page.goto(self.url)
+    async def register(self, user, pwd):
+        await self.p.goto(self.url_reg)
+        await self.p.fill('input[name="username"]', user)
+        await self.p.fill('input[name="password1"]', pwd)
+        await self.p.fill('input[name="password2"]', pwd)
+        await self.p.click('button[type="submit"]')
 
     async def login(self, user, pwd):
-        await self.page.fill('input[name="username"]', user)
-        await self.page.fill('input[name="password"]', pwd)
-        await self.page.click('button[type="submit"]')
+        await self.p.goto(self.url_log)
+        await self.p.fill('input[name="username"]', user)
+        await self.p.fill('input[name="password"]', pwd)
+        await self.p.click('button[type="submit"]')
