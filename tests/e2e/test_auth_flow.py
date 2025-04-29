@@ -2,9 +2,9 @@ import pytest
 from tests.e2e.pages.auth import AuthPage
 
 @pytest.mark.asyncio
-async def test_login_flow(live_server, page, create_user):
+async def test_login(live_server, async_page, create_user):
     create_user()
-    auth = AuthPage(page, live_server.url)
+    auth = AuthPage(async_page, live_server.url)
     await auth.login("demo", "pass123")
-    await page.wait_for_url("**/home")
-    assert await page.is_visible("text=Bem-vindo")
+    await async_page.wait_for_url("**/")
+    assert await async_page.is_visible("text=Bem-vindo")
