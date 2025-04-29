@@ -1,0 +1,4 @@
+# --- testes e2e ---
+pytest==8.3.5
+pytest-playwright==0.7.0
+pytest-django==4.8.0
