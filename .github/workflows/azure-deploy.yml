@@ -23,6 +23,9 @@ jobs:
 
     # - name: Run migrations
     #  run: python manage.py migrate --noinput
+    
+    - name: Collect static
+      run: python manage.py collectstatic --noinput
 
     - name: 'Deploy to Azure WebApp'
       uses: azure/webapps-deploy@v2
