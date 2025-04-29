@@ -1,6 +1,7 @@
 # coletados pelo collectstatic
 /staticfiles/
 
+db.sqlite3
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

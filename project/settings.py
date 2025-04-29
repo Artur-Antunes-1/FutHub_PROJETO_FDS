@@ -37,17 +37,17 @@ CSRF_TRUSTED_ORIGINS = [f"https://{h}" for h in ALLOWED_HOSTS if "." in h]
 # ---------------------------------------------------------------------------
 # Banco de dados (SQLite em dev, persistente no Azure em produção)
 # ---------------------------------------------------------------------------
-if os.getenv("WEBSITE_INSTANCE_ID"):
-    # em Azure App Service, HOME aponta para /home
-    SQLITE_PATH = Path(os.environ["HOME"]) / "site" / "wwwroot" / "db.sqlite3"
-else:
-    # no seu ambiente local
-    SQLITE_PATH = BASE_DIR / "db.sqlite3"
+if os.getenv("WEBSITE_SITE_NAME"):   # estamos no Azure
+    RUNTIME_DB_DIR = Path("/home/site/data")
+    RUNTIME_DB_DIR.mkdir(parents=True, exist_ok=True)
+    DB_PATH = RUNTIME_DB_DIR / "db.sqlite3"
+else:                                # dev local
+    DB_PATH = Path(__file__).resolve().parent.parent / "db.sqlite3"
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": SQLITE_PATH,
+        "NAME": str(DB_PATH),
     }
 }
 
