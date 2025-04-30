@@ -87,7 +87,7 @@
   - ![bug 01](img_entregas/bugtracker01_E3.jpg)
   - ![bug 02](img_entregas/bugtracker02_E3.jpg)
 - **Relatório programação em par:**
-  _Em desenvolvimento_
+  https://docs.google.com/document/d/1TQgb-lOd8iuQMU3bbPHmrO_rELMWlH9_RSnwnXBMTo8/edit?tab=t.0
 - **Screencasts:**
   - [Playlist screencasts Entrega 3](https://youtube.com/playlist?list=PLgbzrH77ofEq27PFBITjqo005BxgAkPs3&si=d-Br92G12rhJDR7y)
   - [Protótipo Lo-fi](https://youtu.be/TByB4HvQIe0)
