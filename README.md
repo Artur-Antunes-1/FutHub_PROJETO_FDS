@@ -16,9 +16,9 @@ Este projeto faz parte da disciplina de **Fundamentos de Desenvolvimento de Soft
 
 A aplicação permitirá que jogadores:
 
-- 📅 Organizem partidas de futebol ;
-- ✅ Façam inscrições e confirmem presença nos jogos;
-- 🏆 Formem times automaticamente ou manualmente;
+- 📅 Organizem grupos de futebol ;
+- ✅ Entrem e confirmem presença nos jogos;
+- 🏆 Formem times balanceados automaticamente;
 - 📊 Acompanhem estatísticas e histórico de partidas.
 
 ## Primeira Entrega
@@ -49,7 +49,32 @@ A aplicação permitirá que jogadores:
 ![print jira 03](img_entregas/bugtracker_entrega2.jpg)
 
 **Link para screencast no youtube**
-{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
+!{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
 
 **Link do deploy**
-{[FutHub](https://futhub-webapp.azurewebsites.net/)}
+!{[FutHub](https://futhub-webapp.azurewebsites.net/)}
+
+
+## Terceira Entrega
+
+**Prints do jira**
+![print jira 01](img_entregas/quadro_jira_E3.jpg)
+![print jira 02](img_entregas/backlog_jira_E3.jpg)
+
+**Sketches e storyboards**
+
+**Link para protótipo do figma**
+!{[Figma atualizado](https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0)}
+
+**Bugtracker**
+![Bugtracker 01](img_entregas/bugtracker01_E3.jpg)
+![Bugtracker 02](img_entregas/bugtracker02_E3.jpg)
+
+**Relatório programação em par**
+
+
+**Screencasts**
+![Protótipo lo-fi]()
+![Deployment]()
+![Build e deployment]()
+![Testes E2E]()
