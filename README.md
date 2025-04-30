@@ -1,8 +1,20 @@
-# ⚽ FutHub (Aplicação de gerenciamento de peladas)
+<p align="center">
+  <img src="https://img.shields.io/badge/Django-FutHub-blue" alt="FutHub" />
+  <img src="https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow" alt="Em Desenvolvimento" />
+</p>
+
+# ⚽ FutHub
+**Aplicação Django para gerenciamento de peladas de futebol amador**
+
+---
+
 
 ## 📌 Sobre o Projeto
+> Sistema para organizar peladas: criação de jogos, confirmação de presença, balanceamento de times e estatísticas.
 
-Este projeto faz parte da disciplina de **Fundamentos de Desenvolvimento de Software** e tem como objetivo criar uma aplicação para facilitar o gerenciamento de peladas de futebol amador.
+| 🔖 Disciplina                       | Fundamentos de Desenvolvimento de Software |
+
+|-------------------------------------|---------------------------------------------|
 
 ## 👥 Integrantes do Grupo
 
@@ -12,69 +24,74 @@ Este projeto faz parte da disciplina de **Fundamentos de Desenvolvimento de Soft
 - **Marco Veras**
 - **Thiago Alves**
 
+---
+
 ## 🎯 Objetivo
-
-A aplicação permitirá que jogadores:
-
 - 📅 Organizem grupos de futebol ;
 - ✅ Entrem e confirmem presença nos jogos;
 - 🏆 Formem times balanceados automaticamente;
 - 📊 Acompanhem estatísticas e histórico de partidas.
 
-## Primeira Entrega
+---
 
-**Link para docs com as histórias**
-{https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing} 
+## 🚀 Sumário
+1. [Sobre o Projeto](#sobre-o-projeto)
+2. [Objetivo](#objetivo)
+3. [Entregas](#entregas)
 
-**Link para o jira**
-{https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1} 
+---
 
-**Prints do jira**
-![print jira 01](img_entregas/novo_print_backlog_jira.jpg)
-![print jira 02](img_entregas/novo_print_quadro_jira.jpg)
-![print jira 03](img_entregas/print_exemplo_historia_jira.jpg)
+## 🔖 Entregas
 
-**Link para protótipo do figma**
-{https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1}
+### 📌 Primeira Entrega
 
-**Link para screencast no youtube**
-{[FutHub_PROJETO_FDS](https://youtu.be/ffIBYHROJXc)}
+- **Link para docs com as histórias:**
+  https://docs.google.com/document/d/1h6qE8jEHx7tMy1SQPBCbcUVZUt3K8P8A9gGN2vL5aVc/edit?usp=sharing
+- **Link para o Jira:**
+  https://projeto-fds-gp3.atlassian.net/jira/software/projects/SCRUM/boards/1
+- **Prints do Jira:**
+  - ![print backlog](img_entregas/novo_print_backlog_jira.jpg)
+  - ![print quadro](img_entregas/novo_print_quadro_jira.jpg)
+  - ![print exemplo](img_entregas/print_exemplo_historia_jira.jpg) 
+- **Protótipo no Figma:**
+  https://www.figma.com/proto/nnLLzpM4WSxZz1bswSUSUQ/FutHub?node-id=1-2650&p=f&t=9IbFr02wzVe4Yd8x-0&scaling=min-zoom&content-scaling=fixed&page-id=0%3A1
+- **Screencast (1ª entrega):**
+  [YouTube](https://youtu.be/ffIBYHROJXc)
 
+---
 
-## Segunda Entrega
+### 📌 Segunda Entrega
 
-**Prints do jira**
-![print jira 01](img_entregas/printbacklog_entrega2.jpg)
-![print jira 02](img_entregas/printquadro_entrega2.jpg)
-![print jira 03](img_entregas/bugtracker_entrega2.jpg)
+- **Prints do Jira:**
+  - ![backlog E2](img_entregas/printbacklog_entrega2.jpg)
+  - ![quadro E2](img_entregas/printquadro_entrega2.jpg)
+- **Bugtracker:**
+  - ![bugtracker E2](img_entregas/bugtracker_entrega2.jpg)
+- **Screencast (2ª entrega):**
+  [YouTube](https://youtu.be/nuT67NEw2OI)
+- **Link do Deploy:**
+  [FutHub](https://futhub-webapp.azurewebsites.net/)
 
-**Link para screencast no youtube**
-{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
+---
 
-**Link do deploy**
-{[FutHub](https://futhub-webapp.azurewebsites.net/)}
+### 📌 Terceira Entrega
 
+- **Prints do Jira:**
+  - ![quadro E3](img_entregas/quadro_jira_E3.jpg)
+  - ![backlog E3](img_entregas/backlog_jira_E3.jpg)
+- **Sketches e Storyboards:**
+  _Disponíveis no repositório_
+- **Protótipo (Lo-fi) no Figma:**
+  https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0
+- **Bugtracker:**
+  - ![bug 01](img_entregas/bugtracker01_E3.jpg)
+  - ![bug 02](img_entregas/bugtracker02_E3.jpg)
+- **Relatório programação em par:**
+  _Em desenvolvimento_
+- **Screencasts:**
+  - Protótipo Lo-fi
+  - Build & Deployment automatizados
+  - Testes E2E
+  - Deployment funcional
 
-## Terceira Entrega
-
-**Prints do jira**
-![print jira 01](img_entregas/quadro_jira_E3.jpg)
-![print jira 02](img_entregas/backlog_jira_E3.jpg)
-
-**Sketches e storyboards**
-
-**Link para protótipo do figma**
-{[Figma atualizado](https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0)}
-
-**Bugtracker**
-![Bugtracker 01](img_entregas/bugtracker01_E3.jpg)
-![Bugtracker 02](img_entregas/bugtracker02_E3.jpg)
-
-**Relatório programação em par**
-
-
-**Screencasts**
-{[Protótipo lo-fi]()}
-{[Deployment]()}
-{[Build e deployment]()}
-{[Testes E2E]()}
+---
