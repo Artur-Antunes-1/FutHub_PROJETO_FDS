@@ -49,10 +49,10 @@ A aplicação permitirá que jogadores:
 ![print jira 03](img_entregas/bugtracker_entrega2.jpg)
 
 **Link para screencast no youtube**
-!{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
+{[FutHub_PROJETO_FDS_Entrega2](https://youtu.be/nuT67NEw2OI)}
 
 **Link do deploy**
-!{[FutHub](https://futhub-webapp.azurewebsites.net/)}
+{[FutHub](https://futhub-webapp.azurewebsites.net/)}
 
 
 ## Terceira Entrega
@@ -64,7 +64,7 @@ A aplicação permitirá que jogadores:
 **Sketches e storyboards**
 
 **Link para protótipo do figma**
-!{[Figma atualizado](https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0)}
+{[Figma atualizado](https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0)}
 
 **Bugtracker**
 ![Bugtracker 01](img_entregas/bugtracker01_E3.jpg)
@@ -74,7 +74,7 @@ A aplicação permitirá que jogadores:
 
 
 **Screencasts**
-![Protótipo lo-fi]()
-![Deployment]()
-![Build e deployment]()
-![Testes E2E]()
+{[Protótipo lo-fi]()}
+{[Deployment]()}
+{[Build e deployment]()}
+{[Testes E2E]()}
