@@ -8,13 +8,12 @@
 
 ---
 
-
 ## 📌 Sobre o Projeto
 > Sistema para organizar peladas: criação de jogos, confirmação de presença, balanceamento de times e estatísticas.
 
 | 🔖 Disciplina                       | Fundamentos de Desenvolvimento de Software |
 
-|-------------------------------------|---------------------------------------------|
+---
 
 ## 👥 Integrantes do Grupo
 
