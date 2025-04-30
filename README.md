@@ -80,7 +80,7 @@
   - ![backlog E3](img_entregas/backlog_jira_E3.jpg)
 - **Sketches e Storyboards:**
   - ![Sketches](img_entregas/sketches.jpg)
-  https://excalidraw.com/#json=inS96UiVY6opdNU_MN4M6,VcEWgoPLnX4CsZyGPpmfkg
+  [Link Sketches](https://excalidraw.com/#json=inS96UiVY6opdNU_MN4M6,VcEWgoPLnX4CsZyGPpmfkg)
 - **Protótipo (Lo-fi) no Figma:**
   https://www.figma.com/design/4B4M0lC5O2rvr2410vKzRj/Untitled?node-id=0-1&p=f&t=Sjmnr7B0S8HAzbvp-0
 - **Bugtracker:**
