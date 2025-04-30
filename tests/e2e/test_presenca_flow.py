@@ -1,4 +1,3 @@
-# substitua TODO o conteúdo do arquivo pelo abaixo
 import pytest
 from tests.e2e.pages.auth import AuthPage
 
