@@ -26,10 +26,10 @@
 ---
 
 ## 🎯 Objetivo
-- 📅 Organizem grupos de futebol ;
-- ✅ Entrem e confirmem presença nos jogos;
-- 🏆 Formem times balanceados automaticamente;
-- 📊 Acompanhem estatísticas e histórico de partidas.
+- 📅 Organizar grupos de futebol ;
+- ✅ Entrar e confirmar presença nos jogos;
+- 🏆 Formar times balanceados automaticamente;
+- 📊 Acompanhar estatísticas e histórico de partidas.
 
 ---
 
