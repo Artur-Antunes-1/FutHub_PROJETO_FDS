@@ -89,9 +89,10 @@
 - **Relatório programação em par:**
   _Em desenvolvimento_
 - **Screencasts:**
-  - Protótipo Lo-fi
-  - Build & Deployment automatizados
-  - Testes E2E
-  - Deployment funcional
+  - [Playlist screencasts Entrega 3](https://youtube.com/playlist?list=PLgbzrH77ofEq27PFBITjqo005BxgAkPs3&si=d-Br92G12rhJDR7y)
+  - [Protótipo Lo-fi](https://youtu.be/TByB4HvQIe0)
+  - [Build & Deployment automatizados](https://youtu.be/e0QMKyoSIPQ)
+  - [Testes E2E](https://youtu.be/ooi2wBZZ6Hg)
+  - [Deployment funcional](https://youtu.be/095i6zr3qnE)
 
 ---
