@@ -94,6 +94,7 @@
   - [Build & Deployment automatizados](https://youtu.be/e0QMKyoSIPQ)
   - [Testes E2E](https://youtu.be/ooi2wBZZ6Hg)
   - [Deployment funcional](https://youtu.be/095i6zr3qnE)
+  - [Testes E2E atualizados](https://youtu.be/V86Tbh_IFhg)
+  - [Build com novos testes](https://youtu.be/safdD0Ketbk)
 
 ---
-teste
