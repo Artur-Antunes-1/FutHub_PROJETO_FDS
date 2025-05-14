@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 import uuid
+from django.contrib.auth import get_user_model
 
 def gerar_uuid():
     """Gera um UUID v4; usado como código de acesso para a pelada."""
@@ -72,3 +73,20 @@ def criar_jogador_automatico(sender, instance, created, **kwargs):
             nome=instance.username,
             email=instance.email
         )
+
+User = get_user_model()
+
+class Sorteio(models.Model):
+    pelada = models.ForeignKey(Pelada, on_delete=models.CASCADE, related_name='sorteios')
+    criado_em = models.DateTimeField(auto_now_add=True)
+
+class SorteioTime(models.Model):
+    sorteio = models.ForeignKey(Sorteio, on_delete=models.CASCADE, related_name='times')
+    nome = models.CharField(max_length=50)
+    total_estrelas = models.PositiveIntegerField()
+    vagas = models.PositiveIntegerField()
+
+class SorteioJogador(models.Model):
+    time = models.ForeignKey(SorteioTime, on_delete=models.CASCADE, related_name='jogadores')
+    jogador = models.ForeignKey(Jogador, on_delete=models.CASCADE)
+    nivel_habilidade = models.PositiveIntegerField()

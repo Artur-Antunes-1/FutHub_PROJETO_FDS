@@ -84,7 +84,13 @@
         </form>
       {% endif %}
 
-      {% if user == pelada.organizador and has_sorteio %}  {# pseudocode, veja abaixo #}
+      {% if user.is_authenticated %}
+        <a href="{% url 'ranking_habilidade' pelada.pk %}" class="btn btn-secondary">
+        📊 Ranking de Habilidade
+        </a>
+      {% endif %}
+
+      {% if has_sorteio %}  {# pseudocode, veja abaixo #}
         <a href="{% url 'ver_sorteio' pelada.id %}" class="btn btn-primary">👀 Ver Sorteio</a>
       {% endif %}
 
@@ -100,7 +106,7 @@
     </p>
     {% for p in presencas %}
       <div class="participante">
-        <span>{{ p.jogador.nome }}</span>
+        <span>{{ p.jogador.usuario.username }}</span>
         <span class="stars">
           {% for i in max_estrelas %}
             {% if forloop.counter0 < p.nivel_habilidade %}

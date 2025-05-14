@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.http import HttpResponseForbidden
 from uuid import UUID
 from django.db.models import Q, Count
-from .models import Pelada, Presenca, Jogador
+from .models import Pelada, Presenca, Jogador, Sorteio, SorteioTime, SorteioJogador
 from django.views.decorators.http import require_http_methods
 import itertools
 import random
@@ -57,19 +57,27 @@ def lista_peladas(request):
 def detalhes_pelada(request, pk):
     jogador = get_or_create_jogador(request.user)
     pelada = get_object_or_404(Pelada, pk=pk)
-    # Apenas organizador ou participante vê
+
+    # acesso só de organizador ou participante
     if not (
         pelada.organizador == request.user or
         Presenca.objects.filter(pelada=pelada, jogador=jogador).exists()
     ):
         return HttpResponseForbidden()
 
-    presencas = Presenca.objects.filter(pelada=pelada).select_related('jogador').order_by('jogador__nome')
+    # traz presenças, já puxa Jogador→User e ordena por nível desc, depois username
+    presencas = (
+        Presenca.objects
+        .filter(pelada=pelada)
+        .select_related('jogador', 'jogador__usuario')
+        .order_by('-nivel_habilidade', 'jogador__usuario__username')
+    )
+
     confirmados = presencas.filter(confirmado=True).count()
     limite = pelada.limite_participantes
 
-    # Verifica se há sorteio salvo na sessão
-    has_sorteio = f'sorteio_{pelada.pk}' in request.session
+    # detecta se existe sorteio salvo no banco
+    has_sorteio = Sorteio.objects.filter(pelada=pelada).exists()
 
     return render(request, 'core/detalhes_pelada.html', {
         'pelada': pelada,
@@ -78,8 +86,8 @@ def detalhes_pelada(request, pk):
         'confirmado': presencas.filter(jogador=jogador, confirmado=True).exists(),
         'confirmados': confirmados,
         'limite': limite,
-        'max_estrelas': range(5),  # para mostrar estrelas
-        'has_sorteio': has_sorteio,  # flag para botão "Ver Sorteio"
+        'max_estrelas': range(1, 6),    # 1 a 5
+        'has_sorteio': has_sorteio,
     })
 
 @login_required
@@ -323,78 +331,82 @@ def sortear_times(request, pk):
     if request.user != pelada.organizador:
         return HttpResponseForbidden()
 
-    confirmados = list(Presenca.objects.filter(pelada=pelada, confirmado=True).select_related('jogador'))
-    limite = pelada.limite_participantes
-    if len(confirmados) != limite:
-        messages.error(request, f'É necessário ter exatamente {limite} confirmados.')
+    pres = list(Presenca.objects.filter(pelada=pelada, confirmado=True).select_related('jogador'))
+    if len(pres) != pelada.limite_participantes:
+        messages.error(request, f'É necessário ter {pelada.limite_participantes} confirmados.')
         return redirect('detalhes_pelada', pk=pk)
 
-    random.shuffle(confirmados)
-    confirmados.sort(key=lambda p: p.nivel_habilidade, reverse=True)
+    random.shuffle(pres)
+    pres.sort(key=lambda p: p.nivel_habilidade, reverse=True)
 
-    teams_count = 4
-    pattern = list(range(teams_count)) + list(range(teams_count-1, -1, -1))
-    pat_cycle = itertools.cycle(pattern)
+    # cria Sorteio
+    sorteio = Sorteio.objects.create(pelada=pelada)
+    teams = [[] for _ in range(4)]
+    pattern = list(range(4)) + list(range(3, -1, -1))
+    for p, slot in zip(pres, itertools.cycle(pattern)):
+        teams[slot].append(p)
 
-    times = []
-    for i in range(teams_count):
-        times.append({'nome': f'Time {i+1}', 'jogadores': [], 'total_estrelas': 0, 'vagas': 0})
+    for idx, jogadores in enumerate(teams):
+        total = sum(p.nivel_habilidade for p in jogadores)
+        vagas = max(0, pelada.limite_participantes//4 - len(jogadores))
+        t = SorteioTime.objects.create(
+            sorteio=sorteio,
+            nome=f"Time {idx+1}",
+            total_estrelas=total,
+            vagas=vagas
+        )
+        for p in jogadores:
+            SorteioJogador.objects.create(
+                time=t,
+                jogador=p.jogador,
+                nivel_habilidade=p.nivel_habilidade
+            )
 
-    for jogador, slot in zip(confirmados, pat_cycle):
-        times[slot]['jogadores'].append(jogador)
-        times[slot]['total_estrelas'] += jogador.nivel_habilidade
-        if sum(len(t['jogadores']) for t in times) == limite:
-            break
-
-    for t in times:
-        vagas = max(0, limite//teams_count - len(t['jogadores']))
-        t['vagas'] = vagas
-
-    # **Salva em sessão** para “ver depois”
-    request.session[f'sorteio_{pelada.pk}'] = [
-        {
-            'nome': t['nome'],
-            'jogadores': [
-                {'nome': p.jogador.nome, 'nivel': p.nivel_habilidade}
-                for p in t['jogadores']
-            ],
-            'total_estrelas': t['total_estrelas'],
-            'vagas': t['vagas'],
-        } for t in times
-    ]
-
-    messages.success(request, 'Times sorteados com sucesso!')
-    return render(request, 'core/sorteio_times.html', {
-        'pelada': pelada,
-        'times': times,
-        'max_estrelas': range(5),
-    })
+    messages.success(request, 'Times sorteados e salvos!')
+    return redirect('ver_sorteio', pk=pk)
 
 @login_required
 def ver_sorteio(request, pk):
     pelada = get_object_or_404(Pelada, pk=pk)
-    if request.user != pelada.organizador:
+    # só organizador ou participante confirmado
+    is_org = (request.user == pelada.organizador)
+    is_part = Presenca.objects.filter(
+        pelada=pelada,
+        jogador__usuario=request.user,
+        confirmado=True
+    ).exists()
+    if not (is_org or is_part):
         return HttpResponseForbidden()
 
-    data = request.session.get(f'sorteio_{pk}')
-    if not data:
-        messages.error(request, 'Nenhum sorteio realizado ainda.')
+    # pega último sorteio
+    sorteio = pelada.sorteios.order_by('-criado_em').first()
+    if not sorteio:
+        messages.error(request, 'Nenhum sorteio disponível.')
         return redirect('detalhes_pelada', pk=pk)
 
-    # Reconstrói objetos simples para template
+    # prepara lista de times com vagas_iter
     times = []
-    for t in data:
-        jogadores = [type('P',(object,),{'jogador':type('J',(object,),{'nome':j['nome']}),'nivel_habilidade':j['nivel']})()
-                     for j in t['jogadores']]
-        times.append({
-            'nome': t['nome'],
-            'jogadores': jogadores,
-            'total_estrelas': t['total_estrelas'],
-            'vagas_iter': range(t['vagas']),
-        })
+    for t in sorteio.times.all().order_by('nome'):
+        t.vagas_iter = range(t.vagas)
+        times.append(t)
 
     return render(request, 'core/sorteio_times.html', {
         'pelada': pelada,
         'times': times,
-        'max_estrelas': range(5),
+        'max_estrelas': range(1, 6),
+    })
+
+@login_required
+def ranking_habilidade(request, pk):
+    pelada = get_object_or_404(Pelada, pk=pk)
+
+    presencas = Presenca.objects.filter(pelada=pelada).order_by('-nivel_habilidade')
+    niveis = [p.nivel_habilidade for p in presencas]
+    media = sum(niveis) / len(niveis) if niveis else 0
+
+    return render(request, 'core/ranking_habilidade.html', {
+        'pelada': pelada,
+        'presencas': presencas,
+        'media_nivel': media,
+        'max_estrelas': range(1, 6),
     })

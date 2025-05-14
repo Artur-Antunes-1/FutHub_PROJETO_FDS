@@ -22,4 +22,5 @@ urlpatterns = [
     path('peladas/entrar-com-codigo/', views.entrar_com_codigo, name='entrar_com_codigo'),
     path('peladas/<int:pk>/sortear/', views.sortear_times, name='sortear_times'),
     path('peladas/<int:pk>/ver-sorteio/', views.ver_sorteio, name='ver_sorteio'),
+    path('peladas/<int:pk>/ranking/', views.ranking_habilidade, name='ranking_habilidade'),
 ]

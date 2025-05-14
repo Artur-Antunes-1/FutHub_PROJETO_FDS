@@ -2,76 +2,37 @@
 
 {% block extra_css %}
 <style>
-  /* Full-width container */
-  .sort-container {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
-    padding: 40px;
-    margin-bottom: 60px;
-  }
-  /* Grid de times ocupa toda largura */
-  .times-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-    gap: 24px;
-    margin-top: 24px;
-  }
-  /* Cartões individuais de time */
-  .time-card {
-    background: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  .time-card h3 {
-    margin: 0 0 12px;
-    font-size: 1.2rem;
-    color: #2c3e50;
-  }
-  .time-card ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 12px;
-    width: 100%;
-  }
-  .time-card li {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.95rem;
-    margin: 6px 0;
-  }
-  .star { font-size: 1em; color: #ccc; }
-  .star.filled { color: gold; }
-  .total-estrelas {
-    font-weight: bold;
-    margin-top: auto;
-  }
+  .sort-container { background:#fff; border-radius:12px; box-shadow:0 6px 20px rgba(0,0,0,0.08); padding:40px; margin-bottom:60px; }
+  .times-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:24px; margin-top:24px; }
+  .time-card { background:#f8f9fa; border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.05); padding:16px; display:flex; flex-direction:column; align-items:center; }
+  .time-card h3 { margin:0 0 12px; font-size:1.2rem; color:#2c3e50; }
+  .time-card ul { list-style:none; padding:0; margin:0 0 12px; width:100%; }
+  .time-card li { display:flex; justify-content:space-between; font-size:0.95rem; margin:6px 0; }
+  .star { font-size:1em; color:#ccc; }
+  .star.filled { color:gold; }
+  .total-estrelas { font-weight:bold; margin-top:auto; }
+  .btn-back { display:inline-block; margin-top:32px; text-decoration:none; color:#555; }
+  .btn-back:hover { text-decoration:underline; }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="sort-container">
-  <h1 class="text-center">Sorteio de Times</h1>
+  <h1 class="text-center">🎲 Sorteio de Times: {{ pelada.nome }}</h1>
 
   <div class="times-grid">
     {% for time in times %}
       <div class="time-card">
         <h3>{{ time.nome }}</h3>
         <ul>
-          {% for presenca in time.jogadores %}
+          {% for pj in time.jogadores.all %}
             <li>
-              {{ presenca.jogador.nome }} –
-              {% for i in max_estrelas %}
-                {% if forloop.counter0 < presenca.nivel_habilidade %}
-                  <span class="star filled">★</span>
-                {% else %}
-                  <span class="star">☆</span>
-                {% endif %}
-              {% endfor %}
+              {{ pj.jogador.usuario.username }} –
+              <span>
+                {% for i in max_estrelas %}
+                  <span class="star {% if i <= pj.nivel_habilidade %}filled{% endif %}">★</span>
+                {% endfor %}
+              </span>
             </li>
           {% endfor %}
           {% for _ in time.vagas_iter %}
@@ -85,8 +46,6 @@
     {% endfor %}
   </div>
 
-  <div class="action-row" style="justify-content:center; margin-top:32px;">
-    <a href="{% url 'detalhes_pelada' pelada.id %}" class="btn btn-back">← Voltar para Pelada</a>
-  </div>
+  <a href="{% url 'detalhes_pelada' pelada.pk %}" class="btn-back">← Voltar para Pelada</a>
 </div>
 {% endblock %}
