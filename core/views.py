@@ -410,3 +410,55 @@ def ranking_habilidade(request, pk):
         'media_nivel': media,
         'max_estrelas': range(1, 6),
     })
+
+## PERFIL
+
+from .models import Jogador
+from django.contrib.auth import logout as auth_logout
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+
+@login_required
+def meu_perfil(request):
+    jogador = request.user.jogador
+
+    if request.method == 'POST':
+        # Exclusão de conta
+        if 'excluir_conta' in request.POST:
+            auth_logout(request)
+            request.user.delete()
+            messages.success(request, 'Conta excluída com sucesso.')
+            return redirect('home')
+
+        # Atualização de perfil
+        jogador.nome       = request.POST.get('nome', jogador.nome).strip()
+        jogador.email      = request.POST.get('email', jogador.email).strip()
+        jogador.posicao    = request.POST.get('posicao', jogador.posicao)
+        jogador.perna_ruim = request.POST.get('perna_ruim', jogador.perna_ruim)
+        foto = request.FILES.get('foto')
+        if foto:
+            jogador.foto = foto
+        jogador.save()
+        messages.success(request, 'Perfil atualizado.')
+        return redirect('meu_perfil')
+
+    context = {
+        'jogador': jogador,
+        'posicoes': Jogador.POSICAO_CHOICES,
+        'pernas': Jogador.PERNA_CHOICES,
+    }
+    return render(request, 'core/perfil.html', context)
+
+@login_required
+def logout_view(request):
+    """Logout simples com redirecionamento para a home."""
+    auth_logout(request)
+    return redirect('home')
+
+@login_required
+def deletar_conta(request):
+    if request.method == 'POST':
+        request.user.delete()
+        return redirect('home')  # ou 'index', se preferir
+    return render(request, 'core/confirmar_exclusao.html')

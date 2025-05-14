@@ -23,4 +23,6 @@ urlpatterns = [
     path('peladas/<int:pk>/sortear/', views.sortear_times, name='sortear_times'),
     path('peladas/<int:pk>/ver-sorteio/', views.ver_sorteio, name='ver_sorteio'),
     path('peladas/<int:pk>/ranking/', views.ranking_habilidade, name='ranking_habilidade'),
+    path('perfil/', views.meu_perfil, name='meu_perfil'),
+    path('deletar-conta/', views.deletar_conta, name='deletar_conta'),
 ]

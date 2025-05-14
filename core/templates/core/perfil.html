@@ -1,0 +1,54 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}Meu Perfil{% endblock %}
+{% block content %}
+<h2>Meu Perfil</h2>
+
+<form method="post" enctype="multipart/form-data" class="perfil-form">
+  {% csrf_token %}
+
+  <label for="nome">Nome:</label>
+  <input type="text" id="nome" name="nome" value="{{ jogador.nome }}" required><br>
+
+  <label for="email">Email:</label>
+  <input type="email" id="email" name="email" value="{{ jogador.email }}" required><br>
+
+  <label for="posicao">Posição:</label>
+  <select id="posicao" name="posicao">
+    <option value="">– Selecione –</option>
+    {% for code, label in posicoes %}
+      <option value="{{ code }}" {% if jogador.posicao == code %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select><br>
+
+  <label for="perna_ruim">Perna Ruim:</label>
+  <select id="perna_ruim" name="perna_ruim">
+    {% for code, label in pernas %}
+      <option value="{{ code }}" {% if jogador.perna_ruim == code %}selected{% endif %}>
+        {{ label }}
+      </option>
+    {% endfor %}
+  </select><br>
+
+  <label for="foto">Foto de Perfil:</label>
+  <input type="file" id="foto" name="foto"><br>
+  {% if jogador.foto %}
+    <p>Foto atual:</p>
+    <img src="{{ jogador.foto.url }}" alt="Foto de Perfil" height="120"><br>
+  {% endif %}
+
+  <button type="submit" class="btn-salvar">Salvar Alterações</button>
+</form>
+
+<hr>
+
+<form method="post" style="margin-top: 20px;">
+  {% csrf_token %}
+  <button name="excluir_conta" value="1" style="color: red;">❌ Excluir Conta</button>
+</form>
+
+<a href="{% url 'logout' %}" class="btn-logout">🚪 Sair</a>
+{% endblock %}
