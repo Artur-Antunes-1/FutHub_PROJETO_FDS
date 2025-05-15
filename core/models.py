@@ -84,7 +84,6 @@ def criar_jogador_automatico(sender, instance, created, **kwargs):
         Jogador.objects.create(
             usuario=instance,
             nome=instance.username,
-            email=instance.email
         )
 
 User = get_user_model()
