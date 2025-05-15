@@ -30,6 +30,8 @@
         <tr>
           <th>#</th>
           <th>Usuário</th>
+          <th>Posição</th>
+          <th>Perna Boa</th>
           <th>Habilidade</th>
         </tr>
       </thead>
@@ -38,16 +40,18 @@
           <tr>
             <td>{{ forloop.counter }}</td>
             <td>{{ pres.jogador.usuario.username }}</td>
+            <td>{{ pres.jogador.get_posicao_display }}</td>
+            <td>{{ pres.jogador.get_perna_boa_display }}</td>
             <td>
               <span class="stars">
                 {% for i in max_estrelas %}
-                  <span class="star {% if i <= pres.nivel_habilidade %}filled{% endif %}">★</span>
+                  <span class="star {% if forloop.counter0 < pres.nivel_habilidade %}filled{% endif %}">★</span>
                 {% endfor %}
               </span>
             </td>
           </tr>
         {% empty %}
-          <tr><td colspan="3">Nenhum participante confirmado.</td></tr>
+          <tr><td colspan="5">Nenhum participante confirmado.</td></tr>
         {% endfor %}
       </tbody>
     </table>

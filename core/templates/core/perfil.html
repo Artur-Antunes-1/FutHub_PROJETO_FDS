@@ -1,54 +1,148 @@
-{% extends 'core/base.html' %}
-{% load static %}
+{% extends "core/base.html" %}
 
 {% block title %}Meu Perfil{% endblock %}
+
+{% block extra_css %}
+<style>
+  .profile-card {
+    max-width: 700px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+  }
+  .profile-card h1 {
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+    color: #333;
+  }
+  .profile-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .profile-form label {
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+    color: #555;
+    display: block;
+  }
+  .profile-form input,
+  .profile-form select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+  }
+  .profile-form .full-width {
+    grid-column: 1 / -1;
+  }
+  .btn-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+  .btn-save {
+    background: #4a90e2;
+    color: #fff;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .btn-save:hover { background: #4178b8; }
+  .btn-back {
+    background: #ccc;
+    color: #333;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  .btn-back:hover { background: #bbb; }
+  .peladas-list h2 {
+    font-size: 1.4rem;
+    margin: 1.5rem 0 0.75rem;
+    color: #333;
+  }
+  .peladas-list ul { list-style: none; padding: 0; }
+  .peladas-list li { margin-bottom: 0.5rem; }
+  .peladas-list a {
+    text-decoration: none;
+    color: #4a90e2;
+    font-weight: 500;
+  }
+  .peladas-list a:hover { text-decoration: underline; }
+</style>
+{% endblock %}
+
 {% block content %}
-<h2>Meu Perfil</h2>
+  <div class="profile-card">
+    <h1>Meu Perfil</h1>
 
-<form method="post" enctype="multipart/form-data" class="perfil-form">
-  {% csrf_token %}
+    <form method="post" class="profile-form">
+      {% csrf_token %}
 
-  <label for="nome">Nome:</label>
-  <input type="text" id="nome" name="nome" value="{{ jogador.nome }}" required><br>
+      <div class="full-width">
+        <label for="id_nome">Nome</label>
+        <input id="id_nome" name="nome" type="text"
+               value="{{ jogador.nome }}" />
+      </div>
 
-  <label for="email">Email:</label>
-  <input type="email" id="email" name="email" value="{{ jogador.email }}" required><br>
+      <div>
+        <label for="id_posicao">Posição</label>
+        <select id="id_posicao" name="posicao">
+          <option value="">— Selecione —</option>
+          {% for code, label in posicoes %}
+            <option value="{{ code }}"
+              {% if jogador.posicao == code %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
 
-  <label for="posicao">Posição:</label>
-  <select id="posicao" name="posicao">
-    <option value="">– Selecione –</option>
-    {% for code, label in posicoes %}
-      <option value="{{ code }}" {% if jogador.posicao == code %}selected{% endif %}>
-        {{ label }}
-      </option>
-    {% endfor %}
-  </select><br>
+      <div>
+        <label for="id_perna_boa">Perna boa</label>
+        <select id="id_perna_boa" name="perna_boa">
+          {% for code, label in pernas %}
+            <option value="{{ code }}"
+              {% if jogador.perna_boa == code %}selected{% endif %}>
+              {{ label }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
 
-  <label for="perna_ruim">Perna Ruim:</label>
-  <select id="perna_ruim" name="perna_ruim">
-    {% for code, label in pernas %}
-      <option value="{{ code }}" {% if jogador.perna_ruim == code %}selected{% endif %}>
-        {{ label }}
-      </option>
-    {% endfor %}
-  </select><br>
+      <div class="full-width btn-group">
+        <button type="submit" class="btn-save">Salvar perfil</button>
+        <a href="{% url 'lista_peladas' %}" class="btn-back">← Voltar</a>
+      </div>
+    </form>
 
-  <label for="foto">Foto de Perfil:</label>
-  <input type="file" id="foto" name="foto"><br>
-  {% if jogador.foto %}
-    <p>Foto atual:</p>
-    <img src="{{ jogador.foto.url }}" alt="Foto de Perfil" height="120"><br>
-  {% endif %}
-
-  <button type="submit" class="btn-salvar">Salvar Alterações</button>
-</form>
-
-<hr>
-
-<form method="post" style="margin-top: 20px;">
-  {% csrf_token %}
-  <button name="excluir_conta" value="1" style="color: red;">❌ Excluir Conta</button>
-</form>
-
-<a href="{% url 'logout' %}" class="btn-logout">🚪 Sair</a>
+    <div class="peladas-list">
+      <h2>Peladas que participo</h2>
+      <ul>
+        {% for pres in presencas %}
+          <li>
+            <a href="{% url 'detalhes_pelada' pres.pelada.pk %}">
+              {{ pres.pelada.nome }} —
+              {% if pres.confirmado %}
+                <strong>Confirmado</strong>
+              {% else %}
+                <em>Não confirmado</em>
+              {% endif %}
+            </a>
+          </li>
+        {% empty %}
+          <li>Você ainda não confirmou presença em nenhuma pelada.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
 {% endblock %}

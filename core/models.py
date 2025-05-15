@@ -40,11 +40,9 @@ class Pelada(models.Model):
 
 class Jogador(models.Model):
     POSICAO_CHOICES = [
-        ('GK', 'Goleiro'),
-        ('CB', 'Zagueiro'),
-        ('LD', 'Lateral Direito'),
-        ('LE', 'Lateral Esquerdo'),
-        ('MC', 'Meia'),
+        ('GOL', 'Goleiro'),
+        ('DEF', 'Defensor'),
+        ('MC', 'Meio Campista'),
         ('ATA', 'Atacante'),
     ]
     PERNA_CHOICES = [
@@ -54,10 +52,8 @@ class Jogador(models.Model):
     ]
     usuario      = models.OneToOneField(User, on_delete=models.CASCADE, related_name='jogador')
     nome         = models.CharField(max_length=150)
-    email        = models.EmailField()
     posicao      = models.CharField(max_length=3, choices=POSICAO_CHOICES, blank=True)
-    perna_ruim   = models.CharField(max_length=1, choices=PERNA_CHOICES, default='D')
-    foto         = models.ImageField(upload_to='fotos_jogadores/', blank=True, null=True)
+    perna_boa = models.CharField(max_length=1, choices=PERNA_CHOICES, default='D')
 
     def __str__(self):
         return self.nome
