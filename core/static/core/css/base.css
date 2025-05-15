@@ -992,8 +992,8 @@ a.deletelink:focus, a.deletelink:hover {
 }
 
 #user-tools {
-    float: right;
-    margin: 0 0 0 20px;
+    float: none;
+    margin: 0;
     text-align: right;
 }
 
