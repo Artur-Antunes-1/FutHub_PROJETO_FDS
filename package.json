@@ -1,0 +1,26 @@
+{
+  "name": "futhub_projeto_fds",
+  "version": "1.0.0",
+  "description": "<p align=\"center\">\r   <img src=\"https://img.shields.io/badge/Django-FutHub-blue\" alt=\"FutHub\" />\r   <img src=\"https://img.shields.io/badge/Status-Em%20Desenvolvimento-yellow\" alt=\"Em Desenvolvimento\" />\r </p>",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Artur-Antunes-1/FutHub_PROJETO_FDS.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Artur-Antunes-1/FutHub_PROJETO_FDS/issues"
+  },
+  "homepage": "https://github.com/Artur-Antunes-1/FutHub_PROJETO_FDS#readme",
+  "devDependencies": {
+    "cypress": "^14.4.0"
+  }
+}
