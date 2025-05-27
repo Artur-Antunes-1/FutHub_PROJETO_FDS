@@ -13,37 +13,33 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install Python dependencies
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.12'
-      - run: |
+
+      - name: Install Python dependencies
+        run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Collect static
         run: python manage.py collectstatic --noinput
 
-      - name: Install Playwright deps (+ browsers)
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements-dev.txt
-          python -m playwright install --with-deps
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
-      - name: Install Cypress
+      - name: Install Cypress & JS deps
         run: npm ci
 
-      - name: Start Django server
+      - name: Run migrations & start server
         run: |
           python manage.py migrate --noinput
           nohup gunicorn your_project_name.wsgi:application --bind 0.0.0.0:8000 &
         env:
-          DJANGO_SETTINGS_MODULE: your_project_name.settings
+          DJANGO_SETTINGS_MODULE: project.settings
 
       - name: Wait for server
         run: npx wait-on http://localhost:8000
@@ -51,7 +47,7 @@ jobs:
       - name: Run Cypress E2E Tests
         run: npx cypress run --headless --config baseUrl=http://localhost:8000
 
-      - name: 'Deploy to Azure WebApp'
+      - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
           app-name: 'futhub-webapp'
