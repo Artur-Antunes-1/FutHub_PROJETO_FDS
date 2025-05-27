@@ -68,6 +68,16 @@ it('Código inválido — exibe mensagem de erro', () => {
   // tenta entrar
   cy.contains('button', 'Entrar').click();
 
+  // URL permanece na tela de entrada por código
+   cy.url().should('include', '/peladas/entrar-com-codigo/');
+
+  // validação visual de erro (pode ser .error-message ou .errorlist)
+   cy.get('.error-message, .errorlist')
+     .should('be.visible')
+     .and($els => {
+       expect($els.length, 'número de elementos de erro').to.be.greaterThan(0);
+     });
+
   // verifica a mensagem de erro na página
   cy.get('.error-message').should('be.visible');
 
