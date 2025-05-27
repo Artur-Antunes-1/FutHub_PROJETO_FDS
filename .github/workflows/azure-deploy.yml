@@ -42,7 +42,7 @@ jobs:
           DJANGO_SETTINGS_MODULE: project.settings
 
       - name: Wait for server
-        run: npx wait-on http://localhost:8000
+        run: npx wait-on http://localhost:8000 --timeout 60000
 
       - name: Run Cypress E2E Tests
         run: npx cypress run --headless --config baseUrl=http://localhost:8000
