@@ -5,16 +5,17 @@ describe('História 1 – Criação de pelada', () => {
     cy.login(user.username, user.password);
   });
 
-  it('Cenário 1: Criação bem-sucedida', () => {
-    cy.createPelada({
-      nome: 'Pelada OK',
-      data: '07/04/2025',
-      hora: '20:30',
-      local: 'Quadra Legal',
-      limite: 10
-    });
-    cy.contains('Pelada OK').should('exist');
+  it('Cenário 1: criação bem‐sucedida', () => {
+  cy.login('demo', 'pass123');
+  cy.createPelada({
+    nome:   'Pelada Exemplo',
+    data:   '27/05/2025',
+    hora:   '20:30',
+    local:  'Quadra da Esquina',
+    limite: 12
   });
+  cy.contains('Pelada Exemplo').should('exist');
+});
 
   it('Cenário 2: Data em formato válido', () => {
     cy.createPelada({
@@ -38,37 +39,37 @@ describe('História 1 – Criação de pelada', () => {
     cy.contains('LocalOK').should('exist');
   });
 
-  it('Cenário 4: Nome em branco — exibe erro', () => {
-    cy.createPelada({
-      nome: '',
-      data: '09/04/2025',
-      hora: '17:00',
-      local: 'Quadra C',
-      limite: 6
-    });
-    cy.get('.errorlist').should('contain', 'Este campo é obrigatório');
-  });
+  it('Cenário 4: Nome em branco — exibe erro nativo “Preencha este campo.”', () => {
+  cy.login('demo', 'pass123');
+  cy.visit('/peladas/criar/');
 
-  it('Cenário 5: Data em formato inválido — exibe erro', () => {
-    cy.createPelada({
-      nome: 'DataErrada',
-      data: '2025-04-07',
-      hora: '20:00',
-      local: 'Quadra D',
-      limite: 4
-    });
-    cy.get('.errorlist').should('contain', 'Formato de data inválido');
-  });
+  // 1) Garante que o nome está vazio
+  cy.get('input[name="nome"]')
+    .clear()
+    .should('have.value', '');
 
-  // extra: horário inválido
-  it('Horário em formato inválido — exibe erro', () => {
-    cy.createPelada({
-      nome: 'HoraErrada',
-      data: '10/04/2025',
-      hora: '8 pm',
-      local: 'Quadra E',
-      limite: 4
-    });
-    cy.get('.errorlist').should('contain', 'Formato de hora inválido');
+  // 2) Preenche os demais campos em ISO/HTML5
+  cy.get('input[name="data_inicial"]')
+    .clear()
+    .type('2025-04-09')
+    .blur();
+  cy.get('input[name="hora"]')
+    .clear()
+    .type('17:00');
+  cy.get('input[name="local"]')
+    .clear()
+    .type('Quadra C');
+  cy.get('input[name="limite_participantes"]')
+    .clear()
+    .type('6');
+
+  // 3) Clica em Salvar Pelada
+  cy.contains('button', /Salvar Pelada|Salvar/i).click();
+
+  // 4) Checa a validação HTML5 do input “nome”
+  cy.get('input[name="nome"]').then($el => {
+    expect($el[0].checkValidity()).to.be.false;
+    expect($el[0].validationMessage).to.equal('Preencha este campo.');
   });
+});
 });

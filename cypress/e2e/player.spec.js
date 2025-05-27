@@ -1,59 +1,74 @@
-describe('História 2 – Adicionar jogadores', () => {
-  const user = { username: 'demo', password: 'pass123' };
-  const peladaId = 'test-pelada-id'; // ajuste para um ID válido no seu setup
+describe('Fluxo: Usuário 1 cria a pelada e Usuário 2 entra com o código', () => {
+  const creator = { username: 'user1', password: 'pass123' };
+  const guest   = { username: 'user2', password: 'pass456' };
+  let codigo;
 
-  beforeEach(() => {
-    cy.login(user.username, user.password);
+  before(() => {
+    cy.deleteUsers();
   });
 
-  it('Cenário 1: Cadastro bem-sucedido', () => {
-    cy.createPlayer({
-      nome: 'Jogador A',
-      email: 'a@ex.com',
-      posicao: 'Atacante',
-      peladaId
-    });
-    cy.contains('Jogador A').should('exist');
+  it('Usuário 1 registra e cria a pelada', () => {
+    cy.visit('/accounts/register/');
+    cy.get('input[name="username"]').type(creator.username);
+    cy.get('input[name="password1"]').type(creator.password);
+    cy.get('input[name="password2"]').type(creator.password);
+    cy.get('button[type="submit"]').click();
+
+    cy.login('user1', 'pass123');
+    cy.createPelada({
+    nome:   'Pelada Exemplo',
+    data:   '27/05/2025',
+    hora:   '20:30',
+    local:  'Quadra da Esquina',
+    limite: 12
+  });
+  cy.contains('Pelada Exemplo').should('exist');
+
+
+    cy.contains('Código de Acesso')
+      .parent()
+      .find('p')
+      .invoke('text')
+      .then(text => {
+        codigo = text.trim();
+        expect(codigo).to.match(/[0-9a-fA-F\-]{36}/);
+      });
   });
 
-  it('Cenário 2: E-mail único', () => {
-    cy.createPlayer({
-      nome: 'Jogador B',
-      email: 'b@ex.com',
-      posicao: 'Meio',
-      peladaId
-    });
-    cy.contains('b@ex.com').should('exist');
-  });
+  it('Usuário 2 registra e entra na pelada com o código', () => {
+    cy.visit('/accounts/logout/');
 
-  it('Cenário 3: Associar jogador existente', () => {
-    // assume que 'Jogador A' já existe
-    cy.createPlayer({
-      nome: 'Jogador A',
-      email: 'a@ex.com',
-      posicao: 'Atacante',
-      peladaId
-    });
-    cy.contains('Jogador A').should('have.length', 1);
-  });
+    cy.visit('/accounts/register/');
+    cy.get('input[name="username"]').type(guest.username);
+    cy.get('input[name="password1"]').type(guest.password);
+    cy.get('input[name="password2"]').type(guest.password);
+    cy.get('button[type="submit"]').click();
 
-  it('Cenário 4: E-mail duplicado — exibe erro', () => {
-    cy.createPlayer({
-      nome: 'Jogador C',
-      email: 'a@ex.com',
-      posicao: 'Zagueiro',
-      peladaId
-    });
-    cy.get('.errorlist').should('contain', 'E-mail já cadastrado');
-  });
+    cy.login('user2', 'pass456');
 
-  it('Cenário 5: Posição em branco — exibe erro', () => {
-    cy.createPlayer({
-      nome: 'Jogador D',
-      email: 'd@ex.com',
-      posicao: '',
-      peladaId
-    });
-    cy.get('.errorlist').should('contain', 'Este campo é obrigatório');
+    cy.enterPeladaByCode(codigo);
+
+    cy.url().should('match', /\/peladas\/\d+\/$/);
+    cy.contains(guest.username).should('be.visible');
   });
+});
+
+it('Código inválido — exibe mensagem de erro', () => {
+  // já deve estar logado como qualquer usuário válido
+  cy.login('user2', 'pass456');
+
+  // navega direto para a tela de entrada por código
+  cy.visit('/peladas/entrar-com-codigo/');
+
+  // digita um UUID inexistente
+  cy.get('input[type="text"]')
+    .clear()
+    .type('00000000-0000-0000-0000-000000000000');
+
+  // tenta entrar
+  cy.contains('button', 'Entrar').click();
+
+  // verifica a mensagem de erro na página
+  cy.contains('Código inválido ou pelada não encontrada.')
+    .should('be.visible');
 });
