@@ -40,27 +40,19 @@ jobs:
 
       - name: Run Cypress E2E tests
         run: npx cypress run --headless --config baseUrl=http://localhost:8000
-
+      
+      - name: Collect static
+        run: |
+          source venv/bin/activate
+          python manage.py collectstatic --noinput
+      
   deploy:
     runs-on: ubuntu-22.04
     needs: build
     environment: production
     steps:
-      - name: Set up Python (deploy)
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
+      - uses: actions/checkout@v3
 
-      - name: Install Python dependencies (deploy)
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Collect static files
-        run: python manage.py collectstatic --noinput
-        env:
-          DJANGO_SETTINGS_MODULE: project.settings
-          
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:
