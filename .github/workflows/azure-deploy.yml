@@ -6,8 +6,9 @@ on:
       - deploy
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-22.04
+
     steps:
       - uses: actions/checkout@v3
 
@@ -45,13 +46,6 @@ jobs:
         run: |
           source venv/bin/activate
           python manage.py collectstatic --noinput
-      
-  deploy:
-    runs-on: ubuntu-22.04
-    needs: build
-    environment: production
-    steps:
-      - uses: actions/checkout@v3
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
