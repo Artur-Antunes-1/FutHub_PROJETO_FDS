@@ -71,14 +71,12 @@ it('Código inválido — exibe mensagem de erro', () => {
   // URL permanece na tela de entrada por código
    cy.url().should('include', '/peladas/entrar-com-codigo/');
 
-  // validação visual de erro (pode ser .error-message ou .errorlist)
-   cy.get('.error-message, .errorlist')
-     .should('be.visible')
-     .and($els => {
-       expect($els.length, 'número de elementos de erro').to.be.greaterThan(0);
-     });
+  // verifica que .error-message existe e está visível
+  cy.get('body').then($body => {
+    const $err = $body.find('.error-message');
+    expect($err.length, 'encontrar .error-message').to.be.greaterThan(0);
+    // verifica visibilidade
+    expect(Cypress.dom.isVisible($err)).to.be.true;
 
-  // verifica a mensagem de erro na página
-  cy.get('.error-message').should('be.visible');
-
+});
 });
