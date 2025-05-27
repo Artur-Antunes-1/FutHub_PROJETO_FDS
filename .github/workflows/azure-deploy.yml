@@ -16,20 +16,20 @@ jobs:
         with:
           python-version: '3.12'
 
-      - name: Create virtual environment
-        run: python -m venv venv
-
-      - name: Install Python dependencies
+      - name: Create virtual env & install Python deps
         run: |
+          python -m venv venv
           source venv/bin/activate
           pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Set up Node.js and install JS deps
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '18'
-      - run: npm ci
+
+      - name: Install JS deps
+        run: npm ci
 
       - name: Run migrations & start server
         run: |
@@ -41,32 +41,12 @@ jobs:
       - name: Run Cypress E2E tests
         run: npx cypress run --headless --config baseUrl=http://localhost:8000
 
-      - name: Collect static files
-        run: |
-          source venv/bin/activate
-          python manage.py collectstatic --noinput
-
-      - name: Package app
-        run: zip -r release.zip . -x "venv/*" "node_modules/*" ".github/*"
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: python-app
-          path: release.zip
-
   deploy:
     runs-on: ubuntu-22.04
     needs: build
     environment: production
     steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: python-app
-
-      - name: Unzip artifact
-        run: unzip release.zip
+      - uses: actions/checkout@v3
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
