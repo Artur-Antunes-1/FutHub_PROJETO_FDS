@@ -48,6 +48,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Collect static
+        run: |
+          source venv/bin/activate
+          python manage.py collectstatic --noinput
+          
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
         with:

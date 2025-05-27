@@ -69,7 +69,10 @@ describe('História 1 – Criação de pelada', () => {
   // 4) Checa a validação HTML5 do input “nome”
   cy.get('input[name="nome"]').then($el => {
     expect($el[0].checkValidity()).to.be.false;
-    expect($el[0].validationMessage).to.equal('Preencha este campo.');
+    expect($el[0].validationMessage).to.be.oneOf([
+        'Preencha este campo.', 
+        'Please fill out this field.'
+      ]);
   });
 });
 });

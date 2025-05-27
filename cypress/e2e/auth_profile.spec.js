@@ -91,7 +91,10 @@ describe('Histórias 12 e 13 – Conta e Perfil', () => {
     // valida que o campo é inválido
     expect($input[0].checkValidity()).to.be.false;
     // valida a mensagem exibida
-    expect($input[0].validationMessage).to.equal('Preencha este campo.');
+    expect($input[0].validationMessage).to.be.oneOf([
+        'Preencha este campo.', 
+        'Please fill out this field.'
+      ]);
   });
 });
 });

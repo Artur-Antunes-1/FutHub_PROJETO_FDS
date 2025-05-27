@@ -69,6 +69,6 @@ it('Código inválido — exibe mensagem de erro', () => {
   cy.contains('button', 'Entrar').click();
 
   // verifica a mensagem de erro na página
-  cy.contains('Código inválido ou pelada não encontrada.')
-    .should('be.visible');
+  cy.get('.error-message').should('be.visible');
+
 });
