@@ -37,7 +37,7 @@ jobs:
       - name: Run migrations & start server
         run: |
           python manage.py migrate --noinput
-          nohup gunicorn your_project_name.wsgi:application --bind 0.0.0.0:8000 &
+          nohup gunicorn project.wsgi:application --bind 0.0.0.0:8000 &
         env:
           DJANGO_SETTINGS_MODULE: project.settings
 
