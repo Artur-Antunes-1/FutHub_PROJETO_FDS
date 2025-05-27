@@ -2,14 +2,12 @@ name: CI/CD to Azure WebApp
 
 on:
   push:
-    branches: [ deploy ]
+    branches:
+      - deploy
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-22.04
-    environment:
-      name: production
-
     steps:
       - uses: actions/checkout@v3
 
@@ -18,35 +16,57 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Create virtual environment
+        run: python -m venv venv
+
       - name: Install Python dependencies
         run: |
-          python -m pip install --upgrade pip
+          source venv/bin/activate
+          pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Collect static
-        run: python manage.py collectstatic --noinput
-
-      - name: Set up Node.js
+      - name: Set up Node.js and install JS deps
         uses: actions/setup-node@v3
         with:
           node-version: '18'
+      - run: npm ci
 
-      - name: Install Cypress & JS deps
-        run: npm ci
-
-      - name: Run migrations & start dev server
+      - name: Run migrations & start server
         run: |
+          source venv/bin/activate
           python manage.py migrate --noinput
-          nohup python manage.py runserver 0.0.0.0:8000 &
+          nohup python manage.py runserver 0.0.0.0:8000 --noreload &
           sleep 5
-        env:
-          DJANGO_SETTINGS_MODULE: project.settings
 
-      - name: Wait for server
-        run: npx wait-on http://localhost:8000 --timeout 60000
-
-      - name: Run Cypress E2E Tests
+      - name: Run Cypress E2E tests
         run: npx cypress run --headless --config baseUrl=http://localhost:8000
+
+      - name: Collect static files
+        run: |
+          source venv/bin/activate
+          python manage.py collectstatic --noinput
+
+      - name: Package app
+        run: zip -r release.zip . -x "venv/*" "node_modules/*" ".github/*"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-app
+          path: release.zip
+
+  deploy:
+    runs-on: ubuntu-22.04
+    needs: build
+    environment: production
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: python-app
+
+      - name: Unzip artifact
+        run: unzip release.zip
 
       - name: Deploy to Azure WebApp
         uses: azure/webapps-deploy@v2
