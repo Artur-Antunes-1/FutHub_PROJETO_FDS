@@ -34,10 +34,11 @@ jobs:
       - name: Install Cypress & JS deps
         run: npm ci
 
-      - name: Run migrations & start server
+      - name: Run migrations & start dev server
         run: |
           python manage.py migrate --noinput
-          nohup gunicorn project.wsgi:application --bind 0.0.0.0:8000 &
+          nohup python manage.py runserver 0.0.0.0:8000 &
+          sleep 5
         env:
           DJANGO_SETTINGS_MODULE: project.settings
 
