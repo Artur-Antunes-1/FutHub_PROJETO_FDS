@@ -98,3 +98,25 @@
   - [Build com novos testes](https://youtu.be/safdD0Ketbk)
 
 ---
+
+### 📌 Quarta Entrega
+
+- **Prints do Jira:**
+  - ![quadro E4](img_entregas/quadro_jira_E4.jpg)
+  - ![backlog E4](img_entregas/backlog_jira_E4.jpg)
+- **Sketches e Storyboards:**
+  - ![Sketches](img_entregas/sketches.jpg)
+  [Link Sketches](https://excalidraw.com/#json=lfGnVBjscLqclUwQ6tbqr,gnISu9xGeiWwi8tGdLXOPQ)
+- **Protótipo (Lo-fi) no Figma:**
+  https://www.figma.com/LINK AQUI
+- **Bugtracker:**
+  - ![bug 01](img_entregas/bugtracker01_E4.jpg)
+  - ![bug 02](img_entregas/bugtracker02_E4.jpg)
+- **Relatório programação em par:**
+  https://docs.google.com/document/d/1u6TygPyi8bbPZCNfdbjMIy3CUTdUkXnHvStJTQ-PzJU/edit?usp=sharing
+- **Screencasts:**
+  - [Playlist screencasts Entrega 4]()
+  - [Protótipo Lo-fi]()
+  - [Build & Deployment automatizados]()
+  - [Testes E2E]()
+  - [Deployment funcional]()
