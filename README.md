@@ -108,7 +108,7 @@
   - ![Sketches](img_entregas/sketches_E4.jpg)
   [Link Sketches](https://excalidraw.com/#json=Z0KBlag9LiqjUG9DmY48M,Zax7w7vaF_E1o0gTqnsdQA)
 - **Protótipo (Lo-fi) no Figma:**
-  https://www.figma.com/LINK AQUI
+  [FIGMA](https://www.figma.com/design/fBaIoMmmnCeaU54Mpx88bv/Untitled--Copy-?node-id=0-1&t=akuzXdzjN2MxvbrL-1)
 - **Bugtracker:**
   - ![bug 01](img_entregas/bugtracker01_E4.jpg)
   - ![bug 02](img_entregas/bugtracker02_E4.jpg)
@@ -116,7 +116,7 @@
   https://docs.google.com/document/d/1u6TygPyi8bbPZCNfdbjMIy3CUTdUkXnHvStJTQ-PzJU/edit?usp=sharing
 - **Screencasts:**
   - [Playlist screencasts Entrega 4](https://youtube.com/playlist?list=PLgbzrH77ofEpPXSfeyPoiNzNlkuvt2Lmx&si=FdeeXQHOnI6CxkyV)
-  - [Protótipo Lo-fi]()
+  - [Protótipo Lo-fi](https://youtu.be/-reyFF0_O7A?si=x9t9sQSrLtmMJqBN)
   - [Build & Deployment automatizados](https://youtu.be/Ce-T60s-a9c?si=7U0r6IRpZSdJ-C2l)
   - [Testes E2E](https://youtu.be/i6GlbLmANGE?si=l9tQhpxQNVP9JVl9)
   - [Deployment funcional](https://youtu.be/pnMf2Ouriek?si=g4yTP8AY3fFifhyI)
