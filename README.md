@@ -120,3 +120,9 @@
   - [Build & Deployment automatizados](https://youtu.be/Ce-T60s-a9c?si=7U0r6IRpZSdJ-C2l)
   - [Testes E2E](https://youtu.be/i6GlbLmANGE?si=l9tQhpxQNVP9JVl9)
   - [Deployment funcional](https://youtu.be/pnMf2Ouriek?si=g4yTP8AY3fFifhyI)
+
+---
+
+## Contribuindo
+
+Para instruções de como configurar o ambiente de desenvolvimento, rodar testes e enviar PRs, confira o arquivo [CONTRIBUTING.md](CONTRIBUTING.md).
