@@ -56,13 +56,15 @@ body {
 /* 3. Header                                                                    */
 /* --------------------------------------------------------------------------- */
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   background: var(--primary-color);
   color: #fff;
   padding: 20px;
   border-radius: 8px;
   margin-bottom: 30px;
   box-shadow: var(--shadow-sm);
-  position: relative;
 }
 
 .header h1 { font-size: 2rem; }
@@ -98,6 +100,7 @@ body {
   display: flex;           /* garante botão e login lado a lado */
   align-items: center;
   padding-bottom: 4px;     /* amplia a zona de hover abaixo do botão */
+  margin-left: auto;
 }
 
 /* Botão hamburger (três barras) */
